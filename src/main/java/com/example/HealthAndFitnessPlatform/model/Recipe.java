@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.util.Lazy;
@@ -16,9 +17,9 @@ import java.util.List;
 
 @Entity
 @Table(name = "recipeTBL")
+@Data
 @AllArgsConstructor
 @RequiredArgsConstructor
-@Data
 public class Recipe {
 
     @Id
@@ -46,7 +47,10 @@ public class Recipe {
 
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @NotNull
+    private int likeCount;
+
+    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")
     private User user;
 
@@ -59,12 +63,8 @@ public class Recipe {
     )
     private List<Ingredient> ingredientList;
 
-
     @OneToMany(mappedBy = "recipe",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private List<Like> likeList;
-
-    @NotNull
-    private int likeCount;
 
     @OneToMany(mappedBy = "recipe",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private List<Comment> commentList;

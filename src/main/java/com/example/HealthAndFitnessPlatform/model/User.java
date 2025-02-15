@@ -1,24 +1,23 @@
 package com.example.HealthAndFitnessPlatform.model;
 
 
-import io.micrometer.common.lang.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "userTBL")
+@Data
 @AllArgsConstructor
 @RequiredArgsConstructor
-@Data
 public class User {
 
     @Id
@@ -38,24 +37,25 @@ public class User {
 
     private String profilePhoto;
 
+    @Column(name = "createdAt")
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<Recipe> recipeList;
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<Like> likeList;
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<Comment> commentList;
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private List<Favorite> favoriteList;
 
-    @OneToMany(mappedBy = "fallowersId", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-    private List<Fallow> fallowers;
+    @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    private List<Follow> followers;
 
-    @OneToMany(mappedBy = "fallowingId",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-    private List<Fallow> fallowing;
+    @OneToMany(mappedBy = "following",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    private List<Follow> following;
 
 }

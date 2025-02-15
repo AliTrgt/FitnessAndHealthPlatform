@@ -2,6 +2,7 @@ package com.example.HealthAndFitnessPlatform.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
@@ -9,9 +10,9 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "favoriteTBL")
+@Data
 @AllArgsConstructor
 @RequiredArgsConstructor
-@Data
 public class Favorite {
 
     @Id
