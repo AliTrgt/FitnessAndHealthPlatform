@@ -1,20 +1,18 @@
 package com.example.HealthAndFitnessPlatform.model;
 
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "likeTBL")
+@Table(name = "favoriteTBL")
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Data
-public class Like {
+public class Favorite {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,10 +22,11 @@ public class Like {
     @JoinColumn(name = "userId")
     private User user;
 
-    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JoinColumn(name = "recipeId")
     private Recipe recipe;
 
     private LocalDateTime createdAt = LocalDateTime.now();
+
 
 }
