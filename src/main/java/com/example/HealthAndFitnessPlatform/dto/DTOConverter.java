@@ -1,9 +1,11 @@
 package com.example.HealthAndFitnessPlatform.dto;
 
 import com.example.HealthAndFitnessPlatform.model.*;
+import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;
 
+@Component
 public class DTOConverter {
 
 
