@@ -1,5 +1,6 @@
 package com.example.HealthAndFitnessPlatform.dto;
 
+import com.example.HealthAndFitnessPlatform.model.Role;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -7,6 +8,7 @@ import java.util.List;
 
 public record UserDTO(int id,
                       String username,
+                      List<Role> authorities,
                       String email,
                       String profilePhoto,
                       LocalDateTime createdAt,

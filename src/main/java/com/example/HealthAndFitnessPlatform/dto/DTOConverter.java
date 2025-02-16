@@ -11,6 +11,7 @@ public class DTOConverter {
         return new UserDTO(
                 user.getId(),
                 user.getUsername(),
+                user.getAuthorities(),
                 user.getEmail(),
                 user.getProfilePhoto(),
                 user.getCreatedAt(),
