@@ -52,6 +52,8 @@ public class UserService {
 
             tempUser.setEmail(user.getEmail());
             tempUser.setProfilePhoto(user.getProfilePhoto());
+            tempUser.setHeight(user.getHeight());
+            tempUser.setWeight(user.getWeight());
 
             User lastUser = userRepository.save(tempUser);
 

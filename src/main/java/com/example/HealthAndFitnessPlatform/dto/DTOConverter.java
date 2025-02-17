@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 @Component
 public class DTOConverter {
 
-
     public UserDTO convertToUserDTO(User user){
         return new UserDTO(
                 user.getId(),
@@ -16,6 +15,8 @@ public class DTOConverter {
                 user.getAuthorities(),
                 user.getEmail(),
                 user.getProfilePhoto(),
+                user.getHeight(),
+                user.getWeight(),
                 user.getCreatedAt(),
                 user.getRecipeList().stream().map(this::convertToRecipeDTO).toList(),
                 user.getLikeList().stream().map(this::convertToLikeDTO).toList(),

@@ -25,6 +25,7 @@ public class Like {
     @JoinColumn(name = "recipeId")
     private Recipe recipe;
 
+    @Column(name = "createdAt")
     private LocalDateTime createdAt = LocalDateTime.now();
 
 }

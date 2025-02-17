@@ -30,6 +30,7 @@ public class Comment {
     @NotNull(message = "You must write a comment !!")
     private String content;
 
+    @Column(name = "createdAt")
     private LocalDateTime createdAt = LocalDateTime.now();
 
 }

@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.util.Lazy;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -64,9 +65,9 @@ public class Recipe {
     private List<Ingredient> ingredientList;
 
     @OneToMany(mappedBy = "recipe",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-    private List<Like> likeList;
+    private List<Like> likeList = new ArrayList<>();
 
     @OneToMany(mappedBy = "recipe",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-    private List<Comment> commentList;
+    private List<Comment> commentList = new ArrayList<>();
 
 }

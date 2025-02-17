@@ -27,6 +27,7 @@ public class Favorite {
     @JoinColumn(name = "recipeId")
     private Recipe recipe;
 
+    @Column(name = "createdAt")
     private LocalDateTime createdAt = LocalDateTime.now();
 
 

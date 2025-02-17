@@ -9,9 +9,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.annotations.Formula;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -44,25 +46,35 @@ public class User implements UserDetails {
 
     private String profilePhoto;
 
+    @NotNull(message = "Height should be CM !!")
+    private double height;
+
+    @NotNull
+    @Size(min = 30,max = 200)
+    private double weight;
+
+    @Formula("weight / (height * height)")
+    private double BMI;
+
     @Column(name = "createdAt")
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    private List<Recipe> recipeList;
+    private List<Recipe> recipeList = new ArrayList<>();
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    private List<Like> likeList;
+    private List<Like> likeList = new ArrayList<>();
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    private List<Comment> commentList;
+    private List<Comment> commentList = new ArrayList<>();
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-    private List<Favorite> favoriteList;
+    private List<Favorite> favoriteList = new ArrayList<>();
 
     @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-    private List<Follow> followers;
+    private List<Follow> followers = new ArrayList<>();
 
     @OneToMany(mappedBy = "following",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-    private List<Follow> following;
+    private List<Follow> following = new ArrayList<>();
 
 }
