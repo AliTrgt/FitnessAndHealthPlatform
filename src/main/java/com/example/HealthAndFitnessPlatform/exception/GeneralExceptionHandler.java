@@ -9,13 +9,28 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GeneralExceptionHandler {
 
         @ExceptionHandler(UserNotFoundException.class)
-        public ResponseEntity<?> handleUser(){
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        public ResponseEntity<?> handleUser(UserNotFoundException exception){
+                return new ResponseEntity<>(exception.getMessage(),HttpStatus.NOT_FOUND);
         }
 
         @ExceptionHandler(CommentNotFoundException.class)
-        public ResponseEntity<?> handleComment(){
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        public ResponseEntity<?> handleComment(CommentNotFoundException exception){
+                return new ResponseEntity<>(exception.getMessage(),HttpStatus.NOT_FOUND);
+        }
+
+        @ExceptionHandler(RecipeNotFoundException.class)
+        public ResponseEntity<?> handleRecipe(RecipeNotFoundException exception){
+                return new ResponseEntity<>(exception.getMessage(),HttpStatus.NOT_FOUND);
+        }
+
+        @ExceptionHandler(FavoriteNotFoundException.class)
+        public ResponseEntity<?> handleFavorite(FavoriteNotFoundException exception){
+                        return new ResponseEntity<>(exception.getMessage(),HttpStatus.NOT_FOUND);
+        }
+
+        @ExceptionHandler(LikeNotFoundException.class)
+        public ResponseEntity<?> handleLike(LikeNotFoundException exception){
+                        return new ResponseEntity<>(exception.getMessage(),HttpStatus.NOT_FOUND);
         }
 
 

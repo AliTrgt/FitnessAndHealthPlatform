@@ -1,0 +1,72 @@
+package com.example.HealthAndFitnessPlatform.service;
+
+import com.example.HealthAndFitnessPlatform.dto.DTOConverter;
+import com.example.HealthAndFitnessPlatform.dto.FavoriteDTO;
+import com.example.HealthAndFitnessPlatform.exception.FavoriteNotFoundException;
+import com.example.HealthAndFitnessPlatform.exception.RecipeNotFoundException;
+import com.example.HealthAndFitnessPlatform.exception.UserNotFoundException;
+import com.example.HealthAndFitnessPlatform.model.Favorite;
+import com.example.HealthAndFitnessPlatform.model.Recipe;
+import com.example.HealthAndFitnessPlatform.model.User;
+import com.example.HealthAndFitnessPlatform.repository.FavoriteRepository;
+import com.example.HealthAndFitnessPlatform.repository.RecipeRepository;
+import com.example.HealthAndFitnessPlatform.repository.UserRepository;
+import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+@Service
+public class FavoriteService {
+
+    private final FavoriteRepository favoriteRepository;
+    private final DTOConverter dtoConverter;
+    private final UserRepository userRepository;
+    private final RecipeRepository recipeRepository;
+
+    public FavoriteService(FavoriteRepository favoriteRepository, DTOConverter dtoConverter, UserRepository userRepository, RecipeRepository recipeRepository) {
+        this.favoriteRepository = favoriteRepository;
+        this.dtoConverter = dtoConverter;
+        this.userRepository = userRepository;
+        this.recipeRepository = recipeRepository;
+    }
+
+    public List<FavoriteDTO> getAllFavorite(){
+            return favoriteRepository.findAll()
+                    .stream()
+                    .map(dtoConverter::convertToFavoriteDTO)
+                    .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public FavoriteDTO createFavorite(int userId, int recipeId){
+        User user  = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("userId not found !! : "+userId));
+        Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(() -> new RecipeNotFoundException("recipe not found !! : "+recipeId));
+
+        Favorite favorite = new Favorite();
+        favorite.setUser(user);
+        favorite.setRecipe(recipe);
+        favorite.setCreatedAt(LocalDateTime.now());
+
+          return dtoConverter.convertToFavoriteDTO(favoriteRepository.save(favorite));
+    }
+
+    @Transactional
+    public void deleteFavorite(int userId, int recipeId) {
+        Favorite favorite = favoriteRepository.findByUserIdAndRecipeId(userId, recipeId)
+                .orElseThrow(() -> new FavoriteNotFoundException("Favorite not found for userId: " + userId + " and recipeId: " + recipeId));
+
+        favoriteRepository.delete(favorite);
+    }
+
+
+
+    public FavoriteDTO toggleFavorite(){
+            return null;
+    }
+
+
+}
