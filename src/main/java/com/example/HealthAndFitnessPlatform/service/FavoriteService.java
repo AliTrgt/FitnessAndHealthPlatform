@@ -63,9 +63,27 @@ public class FavoriteService {
     }
 
 
+    @Transactional
+    public FavoriteDTO toggleFavorite(int userId,int recipeId){
+            User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found : "+userId));
+            Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(() -> new RecipeNotFoundException("Recipe not found : "+recipeId));
 
-    public FavoriteDTO toggleFavorite(){
-            return null;
+            Optional<Favorite> favorite  = favoriteRepository.findByUserIdAndRecipeId(userId,recipeId);
+
+            if (favorite.isPresent()){
+                    favoriteRepository.delete(favorite.get());
+                    return null;
+            }
+
+            else {
+                    Favorite savedFavorite = new Favorite();
+                    savedFavorite.setUser(user);
+                    savedFavorite.setRecipe(recipe);
+                    savedFavorite.setCreatedAt(LocalDateTime.now());
+
+                    return dtoConverter.convertToFavoriteDTO(favoriteRepository.save(savedFavorite));
+            }
+
     }
 
 

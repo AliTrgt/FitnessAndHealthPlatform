@@ -15,6 +15,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class LikeService {
@@ -64,8 +65,29 @@ public class LikeService {
     }
 
 
+
+    @Transactional
     public LikeDTO toggleLike(int userId,int recipeId){
-            return null;
+           User user = userRepository.findById(userId).orElseThrow(() ->new UserNotFoundException("User not found : "+userId));
+           Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(() -> new RecipeNotFoundException("Recipe not found : "+recipeId));
+
+          Optional<Like> existLike = likeRepository.findByUserIdAndRecipeId(userId,recipeId);
+
+        if (existLike.isPresent()){
+                 likeRepository.delete(existLike.get());
+                 recipeRepository.decrementLikeCount(recipeId);
+                 return null;
+          }
+        else  {
+            Like like = new Like();
+            like.setUser(user);
+            like.setRecipe(recipe);
+            like.setCreatedAt(LocalDateTime.now());
+
+            Like savedLike = likeRepository.save(like);
+            recipeRepository.incrementLikeCount(recipeId);
+            return dtoConverter.convertToLikeDTO(savedLike);
+        }
     }
 
 }
