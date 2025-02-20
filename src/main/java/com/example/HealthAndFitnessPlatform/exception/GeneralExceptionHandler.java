@@ -33,6 +33,11 @@ public class GeneralExceptionHandler {
                         return new ResponseEntity<>(exception.getMessage(),HttpStatus.NOT_FOUND);
         }
 
+        @ExceptionHandler(FollowNotException.class)
+        public ResponseEntity<?> handleFollow(FollowNotException exception){
+                        return new ResponseEntity<>(exception.getMessage(),HttpStatus.NOT_FOUND);
+        }
+
 
 
 }

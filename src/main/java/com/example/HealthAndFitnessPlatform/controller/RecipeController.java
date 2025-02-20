@@ -49,9 +49,9 @@ public class RecipeController {
     }
 
     @DeleteMapping("/{recipeId}")
-    public void deleteRecipe(@PathVariable int recipeId){
+    public ResponseEntity<Void> deleteRecipe(@PathVariable int recipeId){
                 recipeService.deleteRecipe(recipeId);
-                log.info("Recipe Has Been Deleted");
+                return  new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 

@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "followTBL")
 @Data
@@ -25,5 +27,9 @@ public class Follow {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "following")
     private User following;
+
+
+    @Column(name = "createdAt")
+    private LocalDateTime createdAt = LocalDateTime.now();
 
 }
