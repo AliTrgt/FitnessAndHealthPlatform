@@ -25,20 +25,20 @@ public class FavoriteController {
             return new ResponseEntity<>(favoriteList, HttpStatus.OK);
     }
 
-    @PostMapping("/toggle/{userId}/{recipeId}")
-    public ResponseEntity<FavoriteDTO> toggleFavorite(@PathVariable int userId, @PathVariable int recipeId){
+    @PostMapping("/toggle")
+    public ResponseEntity<FavoriteDTO> toggleFavorite(@RequestParam int userId, @RequestParam int recipeId){
             FavoriteDTO favorite = favoriteService.toggleFavorite(userId,recipeId);
             return new ResponseEntity<>(favorite,HttpStatus.OK);
     }
 
-    @PostMapping("/create/{userId}/{recipeId}")
-    public ResponseEntity<FavoriteDTO> createFavorite(@PathVariable int userId,@PathVariable int recipeId){
+    @PostMapping("/create")
+    public ResponseEntity<FavoriteDTO> createFavorite(@RequestParam int userId,@RequestParam int recipeId){
             FavoriteDTO favoriteDTO = favoriteService.createFavorite(userId,recipeId);
             return new ResponseEntity<>(favoriteDTO,HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/delete/{userId}/{recipeId}")
-    public ResponseEntity<Void> deleteFavorite(@PathVariable int userId,@PathVariable int recipeId){
+    @DeleteMapping("/delete")
+    public ResponseEntity<Void> deleteFavorite(@RequestParam int userId,@RequestParam int recipeId){
             favoriteService.deleteFavorite(userId,recipeId);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
