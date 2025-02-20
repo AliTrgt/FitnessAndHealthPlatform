@@ -1,6 +1,5 @@
 package com.example.HealthAndFitnessPlatform.service;
 
-import com.example.HealthAndFitnessPlatform.dto.DTOConverter;
 import com.example.HealthAndFitnessPlatform.dto.LikeDTO;
 import com.example.HealthAndFitnessPlatform.exception.LikeNotFoundException;
 import com.example.HealthAndFitnessPlatform.exception.RecipeNotFoundException;
@@ -12,6 +11,7 @@ import com.example.HealthAndFitnessPlatform.repository.LikeRepository;
 import com.example.HealthAndFitnessPlatform.repository.RecipeRepository;
 import com.example.HealthAndFitnessPlatform.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -21,13 +21,13 @@ import java.util.Optional;
 public class LikeService {
 
     private final LikeRepository likeRepository;
-    private final DTOConverter dtoConverter;
+    private final ModelMapper modelMapper;
     private final UserRepository userRepository;
     private final RecipeRepository recipeRepository;
 
-    public LikeService(LikeRepository likeRepository, DTOConverter dtoConverter, UserRepository userRepository, RecipeRepository recipeRepository) {
+    public LikeService(LikeRepository likeRepository,ModelMapper modelMapper, UserRepository userRepository, RecipeRepository recipeRepository) {
         this.likeRepository = likeRepository;
-        this.dtoConverter = dtoConverter;
+        this.modelMapper = modelMapper;
         this.userRepository = userRepository;
         this.recipeRepository = recipeRepository;
     }
@@ -48,8 +48,8 @@ public class LikeService {
 
             recipe.setLikeCount(recipe.getLikeCount() + 1);
             recipeRepository.save(recipe);
-
-         return   dtoConverter.convertToLikeDTO(likeRepository.save(like));
+            Like lastLike = likeRepository.save(like);
+            return   modelMapper.map(lastLike,LikeDTO.class);
     }
 
     @Transactional
@@ -86,7 +86,7 @@ public class LikeService {
 
             Like savedLike = likeRepository.save(like);
             recipeRepository.incrementLikeCount(recipeId);
-            return dtoConverter.convertToLikeDTO(savedLike);
+            return modelMapper.map(savedLike,LikeDTO.class);
         }
     }
 

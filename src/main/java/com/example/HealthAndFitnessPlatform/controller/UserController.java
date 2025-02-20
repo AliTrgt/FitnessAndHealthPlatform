@@ -37,13 +37,13 @@ public class UserController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<UserDTO> createUser(@Valid @RequestBody User user){
+    public ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserDTO user){
         UserDTO userDTO = userService.createUser(user);
-        return new ResponseEntity<>(userDTO,HttpStatus.OK);
+        return new ResponseEntity<>(userDTO,HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{userId}")
-    public ResponseEntity<UserDTO> updateUser(@PathVariable int userId,@Valid @RequestBody User user){
+    public ResponseEntity<UserDTO> updateUser(@PathVariable int userId,@Valid @RequestBody UserDTO user){
              UserDTO userDTO = userService.updateUser(userId,user);
              return new ResponseEntity<>(userDTO,HttpStatus.OK);
     }

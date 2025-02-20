@@ -8,6 +8,7 @@ import java.util.List;
 
 public record UserDTO(int id,
                       String username,
+                      String password,
                       List<Role> authorities,
                       String email,
                       String profilePhoto,

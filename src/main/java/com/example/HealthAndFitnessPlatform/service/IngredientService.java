@@ -1,49 +1,54 @@
 package com.example.HealthAndFitnessPlatform.service;
 
-import com.example.HealthAndFitnessPlatform.dto.DTOConverter;
 import com.example.HealthAndFitnessPlatform.dto.IngredientDTO;
 import com.example.HealthAndFitnessPlatform.exception.IngredientNotFoundException;
 import com.example.HealthAndFitnessPlatform.model.Ingredient;
 import com.example.HealthAndFitnessPlatform.repository.IngredientRepository;
+import jakarta.transaction.Transactional;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class IngredientService {
 
-    private final DTOConverter dtoConverter;
+    private final ModelMapper modelMapper;
     private final IngredientRepository ingredientRepository;
 
-    public IngredientService(DTOConverter dtoConverter, IngredientRepository ingredientRepository) {
-        this.dtoConverter = dtoConverter;
+    public IngredientService(ModelMapper modelMapper, IngredientRepository ingredientRepository) {
+        this.modelMapper = modelMapper;
         this.ingredientRepository = ingredientRepository;
     }
 
     public List<IngredientDTO> getAllIngredient(){
-          return  ingredientRepository.findAll()
+        List<Ingredient> ingredientList = ingredientRepository.findAll();
+        return  ingredientList.isEmpty() ? Collections.emptyList() : ingredientList
                     .stream()
-                    .map(dtoConverter::convertToIngredientDTO)
+                    .map(ingredient -> modelMapper.map(ingredient,IngredientDTO.class))
                     .collect(Collectors.toList());
     }
 
     public IngredientDTO findById(int ingredientId){
         Ingredient ingredient = ingredientRepository.findById(ingredientId).orElseThrow(() -> new IngredientNotFoundException("Ingredient not found : "+ingredientId));
-        return dtoConverter.convertToIngredientDTO(ingredient);
+        return modelMapper.map(ingredient,IngredientDTO.class);
     }
 
-    public IngredientDTO createIngredient(Ingredient ingredient){
-           Ingredient lastIngredient = ingredientRepository.save(ingredient);
-           return dtoConverter.convertToIngredientDTO(lastIngredient);
+    public IngredientDTO createIngredient(IngredientDTO ingredient){
+           Ingredient firstIngredient = modelMapper.map(ingredient,Ingredient.class);
+           Ingredient lastIngredient = ingredientRepository.save(firstIngredient);
+           return modelMapper.map(lastIngredient,IngredientDTO.class);
     }
 
-    public IngredientDTO updateIngredient(int ingredientId,Ingredient ingredient){
+    @Transactional
+    public IngredientDTO updateIngredient(int ingredientId,IngredientDTO ingredient){
         Ingredient firstIngredient = ingredientRepository.findById(ingredientId).orElseThrow(() -> new IngredientNotFoundException("Ingredient not found : "+ingredientId));
-        firstIngredient.setName(ingredient.getName());
+        firstIngredient.setName(ingredient.name());
 
         Ingredient lastIngredient = ingredientRepository.save(firstIngredient);
-        return dtoConverter.convertToIngredientDTO(lastIngredient);
+        return modelMapper.map(lastIngredient,IngredientDTO.class);
     }
 
     public void deleteIngredient(int ingredientId){

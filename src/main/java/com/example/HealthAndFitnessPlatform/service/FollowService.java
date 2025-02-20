@@ -1,24 +1,24 @@
 package com.example.HealthAndFitnessPlatform.service;
 
-import com.example.HealthAndFitnessPlatform.dto.DTOConverter;
 import com.example.HealthAndFitnessPlatform.dto.FollowDTO;
 import com.example.HealthAndFitnessPlatform.repository.FollowRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 @Service
 public class FollowService {
 
         private final FollowRepository followRepository;
-        private final DTOConverter dtoConverter;
+        private final ModelMapper modelMapper;
 
-        public FollowService(FollowRepository followRepository, DTOConverter dtoConverter) {
+        public FollowService(FollowRepository followRepository, ModelMapper modelMapper) {
                 this.followRepository = followRepository;
-                this.dtoConverter = dtoConverter;
+                this.modelMapper = modelMapper;
         }
 
 
         public FollowDTO followUser(int followingId,int followerId){
-
+                        return null;
         }
 
 

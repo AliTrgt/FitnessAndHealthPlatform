@@ -1,6 +1,5 @@
 package com.example.HealthAndFitnessPlatform.service;
 
-import com.example.HealthAndFitnessPlatform.dto.DTOConverter;
 import com.example.HealthAndFitnessPlatform.dto.FavoriteDTO;
 import com.example.HealthAndFitnessPlatform.exception.FavoriteNotFoundException;
 import com.example.HealthAndFitnessPlatform.exception.RecipeNotFoundException;
@@ -12,9 +11,11 @@ import com.example.HealthAndFitnessPlatform.repository.FavoriteRepository;
 import com.example.HealthAndFitnessPlatform.repository.RecipeRepository;
 import com.example.HealthAndFitnessPlatform.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,21 +24,22 @@ import java.util.stream.Collectors;
 public class FavoriteService {
 
     private final FavoriteRepository favoriteRepository;
-    private final DTOConverter dtoConverter;
+    private final ModelMapper modelMapper;
     private final UserRepository userRepository;
     private final RecipeRepository recipeRepository;
 
-    public FavoriteService(FavoriteRepository favoriteRepository, DTOConverter dtoConverter, UserRepository userRepository, RecipeRepository recipeRepository) {
+    public FavoriteService(FavoriteRepository favoriteRepository,ModelMapper modelMapper, UserRepository userRepository, RecipeRepository recipeRepository) {
         this.favoriteRepository = favoriteRepository;
-        this.dtoConverter = dtoConverter;
+        this.modelMapper = modelMapper;
         this.userRepository = userRepository;
         this.recipeRepository = recipeRepository;
     }
 
     public List<FavoriteDTO> getAllFavorite(){
-            return favoriteRepository.findAll()
+        List<Favorite> favoriteList = favoriteRepository.findAll();
+        return favoriteList.isEmpty() ? Collections.emptyList() : favoriteList
                     .stream()
-                    .map(dtoConverter::convertToFavoriteDTO)
+                    .map(favorite -> modelMapper.map(favorite,FavoriteDTO.class))
                     .collect(Collectors.toList());
     }
 
@@ -50,8 +52,8 @@ public class FavoriteService {
         favorite.setUser(user);
         favorite.setRecipe(recipe);
         favorite.setCreatedAt(LocalDateTime.now());
-
-          return dtoConverter.convertToFavoriteDTO(favoriteRepository.save(favorite));
+        Favorite savedFavorite  = favoriteRepository.save(favorite);
+          return modelMapper.map(savedFavorite,FavoriteDTO.class);
     }
 
     @Transactional
@@ -80,8 +82,8 @@ public class FavoriteService {
                     savedFavorite.setUser(user);
                     savedFavorite.setRecipe(recipe);
                     savedFavorite.setCreatedAt(LocalDateTime.now());
-
-                    return dtoConverter.convertToFavoriteDTO(favoriteRepository.save(savedFavorite));
+                    Favorite lastFavorite = favoriteRepository.save(savedFavorite);
+                    return modelMapper.map(lastFavorite,FavoriteDTO.class);
             }
 
     }
