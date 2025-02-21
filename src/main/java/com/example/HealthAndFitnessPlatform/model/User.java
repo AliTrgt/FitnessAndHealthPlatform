@@ -4,11 +4,9 @@ package com.example.HealthAndFitnessPlatform.model;
 import io.micrometer.common.lang.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Formula;
+import org.springframework.beans.Mergeable;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
@@ -32,7 +30,7 @@ public class User implements UserDetails {
     @NotNull(message = "Password must be least 8 character")
     private String password;
 
-    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.PERSIST)
+    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.MERGE)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "userId"),
             inverseJoinColumns = @JoinColumn(name = "roleId"))
@@ -81,4 +79,17 @@ public class User implements UserDetails {
         }
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", height=" + height +
+                ", weight=" + weight +
+                ", password='" + password + '\'' +
+                ", BMI=" + BMI +
+                ", createdAt=" + createdAt +
+                '}';
+    }
 }

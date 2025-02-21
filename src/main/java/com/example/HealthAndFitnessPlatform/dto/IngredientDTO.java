@@ -1,7 +1,14 @@
 package com.example.HealthAndFitnessPlatform.dto;
 
+import lombok.Data;
+
 import java.util.List;
 
-public record IngredientDTO(int id,
-                            String name) {
+@Data
+public class IngredientDTO {
+
+    private int id;
+    private String name;
+
+
 }

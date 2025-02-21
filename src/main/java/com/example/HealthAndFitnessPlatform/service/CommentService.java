@@ -46,8 +46,8 @@ public class CommentService {
     public CommentDTO updateComment(int commentId,CommentDTO comment){
             Comment lastComment = commentRepository.findById(commentId).orElseThrow(() -> new CommentNotFoundException("Comment id not found : "+commentId));
 
-            if (comment.content() != null && !comment.content().trim().isEmpty()) {
-                lastComment.setContent(comment.content());
+            if (comment.getContent() != null && !comment.getContent().trim().isEmpty()) {
+                lastComment.setContent(comment.getContent());
             }
 
             return modelMapper.map(lastComment,CommentDTO.class);

@@ -1,18 +1,26 @@
 package com.example.HealthAndFitnessPlatform.dto;
 
+import lombok.Data;
+import lombok.ToString;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
-public record RecipeDTO(int id,
-                        String title,
-                        String description,
-                        String instructions,
-                        int prepTime,
-                        double calories,
-                        LocalDateTime createdAt,
-                        int likeCount,
-                        int userId,
-                        List<IngredientDTO> ingredientList,
-                        List<LikeDTO> likeList,
-                        List<CommentDTO> commentList) {
+@Data
+public class RecipeDTO {
+
+    private int id;
+    private String title;
+    private String description;
+    private String instructions;
+    private int prepTime;
+    private double calories;
+    private LocalDateTime createdAt;
+    private int likeCount;
+    private int userId;
+    private List<IngredientDTO> ingredientList;
+    private List<LikeDTO> likeList;
+    private List<CommentDTO> commentList;
+
+
 }

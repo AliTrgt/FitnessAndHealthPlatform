@@ -1,10 +1,16 @@
 package com.example.HealthAndFitnessPlatform.dto;
 
+import lombok.Data;
+
 import java.time.LocalDateTime;
 
-public record CommentDTO(int id,
-                         int userId,
-                         int recipeId,
-                         String content,
-                         LocalDateTime createdAt) {
+@Data
+public class CommentDTO {
+
+    private int id;
+    private int userId;
+    private int recipeId;
+    private String content;
+    private LocalDateTime createdAt;
+
 }

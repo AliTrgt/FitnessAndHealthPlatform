@@ -18,28 +18,28 @@ public class LikeController {
             this.likeService = likeService;
         }
 
-        @GetMapping
+        @GetMapping("/getAll")
         public ResponseEntity<List<LikeDTO>> getAllLike(){
                 List<LikeDTO> likeList = likeService.getAllLike();
                 return new ResponseEntity<>(likeList, HttpStatus.OK);
         }
 
-        @PostMapping("/like")
-        public ResponseEntity<LikeDTO> like(@RequestParam int userId,@RequestParam int recipeId){
-                LikeDTO likeDTO  = likeService.createLike(userId,recipeId);
-                return new ResponseEntity<>(likeDTO,HttpStatus.CREATED);
+        @PostMapping
+        public ResponseEntity<LikeDTO> like(@RequestBody LikeDTO likeDTO){
+                LikeDTO like  = likeService.createLike(likeDTO.getUserId(), likeDTO.getRecipeId());
+                return new ResponseEntity<>(like,HttpStatus.CREATED);
         }
 
         @DeleteMapping("/dislike")
-        public ResponseEntity<Void> dislike(@RequestParam int userId,@RequestParam int recipeId){
-                likeService.deleteLike(userId,recipeId);
+        public ResponseEntity<Void> dislike(@RequestBody LikeDTO likeDTO){
+                likeService.deleteLike(likeDTO.getUserId(),likeDTO.getRecipeId());
                 return  new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
         @PostMapping("/toggleLike")
-        public ResponseEntity<LikeDTO> toggleLike(@RequestParam int userId,@RequestParam int recipeId){
-                LikeDTO likeDTO = likeService.toggleLike(userId,recipeId);
-                return new ResponseEntity<>(likeDTO,HttpStatus.CREATED);
+        public ResponseEntity<LikeDTO> toggleLike(@RequestBody LikeDTO likeDTO){
+                LikeDTO like = likeService.toggleLike(likeDTO.getUserId(),likeDTO.getRecipeId());
+                return new ResponseEntity<>(like,HttpStatus.CREATED);
         }
 
 

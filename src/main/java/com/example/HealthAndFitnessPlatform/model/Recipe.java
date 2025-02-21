@@ -6,10 +6,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.apache.logging.log4j.util.Lazy;
 
 import java.time.LocalDateTime;
@@ -21,6 +18,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @RequiredArgsConstructor
+@ToString
 public class Recipe {
 
     @Id
@@ -39,7 +37,7 @@ public class Recipe {
     private String instructions;
 
     @NotNull
-    @Max(5)
+    @Max(300)
     private int prepTime;
 
     @NotNull
@@ -51,12 +49,12 @@ public class Recipe {
     @NotNull
     private int likeCount;
 
+    @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")
     private User user;
 
-
-    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.MERGE,fetch = FetchType.EAGER)
     @JoinTable(
             name = "recipeIngredients",
             joinColumns = @JoinColumn(name = "recipeId"),
@@ -77,4 +75,17 @@ public class Recipe {
         }
     }
 
+    @Override
+    public String toString() {
+        return "Recipe{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", calories=" + calories +
+                ", createdAt=" + createdAt +
+                ", description='" + description + '\'' +
+                ", instructions='" + instructions + '\'' +
+                ", likeCount=" + likeCount +
+                ", prepTime=" + prepTime +
+                '}';
+    }
 }

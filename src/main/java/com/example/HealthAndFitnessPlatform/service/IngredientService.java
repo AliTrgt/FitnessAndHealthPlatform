@@ -45,7 +45,7 @@ public class IngredientService {
     @Transactional
     public IngredientDTO updateIngredient(int ingredientId,IngredientDTO ingredient){
         Ingredient firstIngredient = ingredientRepository.findById(ingredientId).orElseThrow(() -> new IngredientNotFoundException("Ingredient not found : "+ingredientId));
-        firstIngredient.setName(ingredient.name());
+        firstIngredient.setName(ingredient.getName());
 
         Ingredient lastIngredient = ingredientRepository.save(firstIngredient);
         return modelMapper.map(lastIngredient,IngredientDTO.class);

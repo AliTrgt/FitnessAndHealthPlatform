@@ -19,10 +19,12 @@ public class Like {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "userId")
+    @ToString.Exclude
     private User user;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "recipeId")
+    @ToString.Exclude
     private Recipe recipe;
 
     @Column(name = "createdAt")

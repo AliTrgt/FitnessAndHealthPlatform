@@ -41,7 +41,11 @@ public class UserService {
 
     public UserDTO createUser(UserDTO userDTO){
         User user = modelMapper.map(userDTO,User.class);
-        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        double height = user.getHeight();
+        double weight = user.getWeight();
+        double BMI = (weight / (height * height)) * 10000;
+        user.setBMI(BMI);
         User tempUser = userRepository.save(user);
         return modelMapper.map(tempUser,UserDTO.class);
     }

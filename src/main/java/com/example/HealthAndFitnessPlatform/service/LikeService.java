@@ -72,7 +72,7 @@ public class LikeService {
             recipe.setLikeCount(Math.max(recipe.getLikeCount() - 1, 0));
             recipeRepository.save(recipe);
 
-            likeRepository.delete(like);
+            likeRepository.deleteById(like.getId());
     }
 
 

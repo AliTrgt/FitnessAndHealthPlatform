@@ -1,9 +1,15 @@
 package com.example.HealthAndFitnessPlatform.dto;
 
+import lombok.Data;
+
 import java.time.LocalDateTime;
 
-public record FavoriteDTO(int id,
-                          int userId,
-                          int recipeId,
-                          LocalDateTime createdAt) {
+@Data
+public class FavoriteDTO {
+
+    private int id;
+    private int userId;
+    private int recipeId;
+    private LocalDateTime createdAt;
+
 }

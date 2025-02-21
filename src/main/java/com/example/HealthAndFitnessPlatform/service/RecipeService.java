@@ -45,18 +45,17 @@ public class RecipeService {
     @Transactional
     public RecipeDTO updateRecipe(int recipeId,RecipeDTO recipe){
             Recipe firstRecipe = recipeRepository.findById(recipeId).orElseThrow(() -> new RecipeNotFoundException("Recipe Id Not Found : "+recipeId));
-            firstRecipe.setCalories(recipe.calories());
-            firstRecipe.setDescription(recipe.description());
-            firstRecipe.setInstructions(recipe.instructions());
-            firstRecipe.setTitle(recipe.title());
-            firstRecipe.setPrepTime(recipe.prepTime());
-            firstRecipe.setLikeCount(recipe.likeCount());
+            firstRecipe.setCalories(recipe.getCalories());
+            firstRecipe.setDescription(recipe.getDescription());
+            firstRecipe.setInstructions(recipe.getInstructions());
+            firstRecipe.setTitle(recipe.getTitle());
+            firstRecipe.setPrepTime(recipe.getPrepTime());
+            firstRecipe.setLikeCount(recipe.getLikeCount());
 
             Recipe lastRecipe = recipeRepository.save(firstRecipe);
 
             return modelMapper.map(lastRecipe,RecipeDTO.class);
     }
-
 
     public void deleteRecipe(int recipeId){
             Recipe lastRecipe = recipeRepository.findById(recipeId).orElseThrow(() -> new RecipeNotFoundException("Recipe Id Not Found : "+recipeId));
