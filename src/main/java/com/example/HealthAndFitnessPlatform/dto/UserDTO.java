@@ -1,24 +1,29 @@
 package com.example.HealthAndFitnessPlatform.dto;
 
 import com.example.HealthAndFitnessPlatform.model.Role;
-import lombok.Data;
+import lombok.*;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-public record UserDTO(int id,
-                      String username,
-                      String password,
-                      List<Role> authorities,
-                      String email,
-                      String profilePhoto,
-                      double height,
-                      double weight,
-                      LocalDateTime createdAt,
-                      List<RecipeDTO> recipeList,
-                      List<LikeDTO> likeList,
-                      List<CommentDTO> commentList,
-                      List<FavoriteDTO> favoriteList,
-                      List<FollowDTO> followers,
-                      List<FollowDTO> following) {
+@Data
+public class UserDTO {
+
+    private int id;
+    private String username;
+    private String password;
+    private List<Role> authorities;
+    private String email;
+    private String profilePhoto;
+    private double height;
+    private double weight;
+    private LocalDateTime createdAt;
+    private  List<RecipeDTO> recipeList;
+    private List<LikeDTO> likeList;
+    private List<CommentDTO> commentList;
+    private  List<FavoriteDTO> favoriteList;
+    private  List<FollowDTO> followers;
+    private  List<FollowDTO> following;
+
 }

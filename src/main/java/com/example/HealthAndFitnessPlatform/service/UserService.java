@@ -41,7 +41,7 @@ public class UserService {
 
     public UserDTO createUser(UserDTO userDTO){
         User user = modelMapper.map(userDTO,User.class);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         User tempUser = userRepository.save(user);
         return modelMapper.map(tempUser,UserDTO.class);
     }
@@ -49,11 +49,11 @@ public class UserService {
     public UserDTO updateUser(int userId,UserDTO userDTO){
             User tempUser = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User id can not found : "+userId));
 
-            tempUser.setUsername(userDTO.username());
-            tempUser.setEmail(userDTO.email());
-            tempUser.setProfilePhoto(userDTO.profilePhoto());
-            tempUser.setHeight(userDTO.height());
-            tempUser.setWeight(userDTO.weight());
+            tempUser.setUsername(userDTO.getUsername());
+            tempUser.setEmail(userDTO.getEmail());
+            tempUser.setProfilePhoto(userDTO.getProfilePhoto());
+            tempUser.setHeight(userDTO.getHeight());
+            tempUser.setWeight(userDTO.getWeight());
 
             User lastUser = userRepository.save(tempUser);
             return modelMapper.map(lastUser,UserDTO.class);

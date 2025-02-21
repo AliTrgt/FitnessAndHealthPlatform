@@ -33,4 +33,10 @@ public class Comment {
     @Column(name = "createdAt")
     private LocalDateTime createdAt = LocalDateTime.now();
 
+    @PrePersist
+    public void prePersist() {
+        if (this.createdAt == null) {
+            this.createdAt = LocalDateTime.now();
+        }
+    }
 }

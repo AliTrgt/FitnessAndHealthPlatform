@@ -1,10 +1,9 @@
 package com.example.HealthAndFitnessPlatform.model;
 
 
+import io.micrometer.common.lang.Nullable;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -30,11 +29,10 @@ public class User implements UserDetails {
     @NotNull(message = "Username can not be Null !!")
     private String username;
 
-    @NotNull
-    @Size(min = 8,max = 16,message = "Password must be least 8 character")
+    @NotNull(message = "Password must be least 8 character")
     private String password;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.PERSIST)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "userId"),
             inverseJoinColumns = @JoinColumn(name = "roleId"))
@@ -50,10 +48,9 @@ public class User implements UserDetails {
     private double height;
 
     @NotNull
-    @Size(min = 30,max = 200)
+    @Max(200)
     private double weight;
 
-    @Formula("weight / (height * height)")
     private double BMI;
 
     @Column(name = "createdAt")
@@ -76,5 +73,12 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "following",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private List<Follow> following = new ArrayList<>();
+
+    @PrePersist
+    public void prePersist() {
+        if (this.createdAt == null) {
+            this.createdAt = LocalDateTime.now();
+        }
+    }
 
 }

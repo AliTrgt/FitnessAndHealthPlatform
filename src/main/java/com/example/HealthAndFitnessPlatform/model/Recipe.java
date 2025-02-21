@@ -70,4 +70,11 @@ public class Recipe {
     @OneToMany(mappedBy = "recipe",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private List<Comment> commentList = new ArrayList<>();
 
+    @PrePersist
+    public void prePersist() {
+        if (this.createdAt == null) {
+            this.createdAt = LocalDateTime.now();
+        }
+    }
+
 }
