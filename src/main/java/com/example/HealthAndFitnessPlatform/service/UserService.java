@@ -1,16 +1,21 @@
 package com.example.HealthAndFitnessPlatform.service;
 
+import com.example.HealthAndFitnessPlatform.dto.AuthRequest;
 import com.example.HealthAndFitnessPlatform.dto.UserDTO;
 import com.example.HealthAndFitnessPlatform.exception.UserNotFoundException;
 import com.example.HealthAndFitnessPlatform.model.User;
 import com.example.HealthAndFitnessPlatform.repository.UserRepository;
+import com.example.HealthAndFitnessPlatform.security.JwtService;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.MapReactiveUserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,11 +24,15 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
+    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
 
-    public UserService(UserRepository userRepository,PasswordEncoder passwordEncoder, ModelMapper modelMapper) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, ModelMapper modelMapper, AuthenticationManager authenticationManager, JwtService jwtService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.modelMapper = modelMapper;
+        this.authenticationManager = authenticationManager;
+        this.jwtService = jwtService;
     }
 
     public List<UserDTO> getAllUser(){
@@ -69,5 +78,24 @@ public class UserService {
            userRepository.delete(user);
     }
 
+
+    public Map<String,String> login(AuthRequest authRequest){
+        Authentication authentication  = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.username(),authRequest.password()));
+        if (authentication.isAuthenticated()){
+                String accessToken = jwtService.generateToken(authRequest.username());
+                Map<String,String> tokens = new HashMap<>();
+                tokens.put("accessToken",accessToken);
+                return tokens;
+        }
+        throw new UsernameNotFoundException("Invalid Username : "+authRequest.username());
+    }
+
+    public String register(AuthRequest authRequest){
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.username(),authRequest.password()));
+            if (authentication.isAuthenticated()){
+                    return jwtService.generateToken(authRequest.username());
+            }
+            throw new UsernameNotFoundException("Invalid Username : "+authRequest.username());
+    }
 
 }

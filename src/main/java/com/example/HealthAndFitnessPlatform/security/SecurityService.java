@@ -1,4 +1,4 @@
-package com.example.HealthAndFitnessPlatform.service;
+package com.example.HealthAndFitnessPlatform.security;
 
 import com.example.HealthAndFitnessPlatform.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;

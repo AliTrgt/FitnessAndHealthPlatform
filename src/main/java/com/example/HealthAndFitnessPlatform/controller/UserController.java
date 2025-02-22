@@ -1,6 +1,7 @@
 package com.example.HealthAndFitnessPlatform.controller;
 
 
+import com.example.HealthAndFitnessPlatform.dto.AuthRequest;
 import com.example.HealthAndFitnessPlatform.dto.UserDTO;
 import com.example.HealthAndFitnessPlatform.model.User;
 import com.example.HealthAndFitnessPlatform.service.UserService;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/v1/user")
@@ -51,5 +53,15 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(@PathVariable int userId){
             userService.deleteUser(userId);
              return  new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping("/login")
+    public Map<String,String> login(@RequestBody AuthRequest authRequest){
+            return userService.login(authRequest);
+    }
+
+    @PostMapping("/register")
+    public String register(@RequestBody AuthRequest authRequest){
+            return userService.register(authRequest);
     }
 }
