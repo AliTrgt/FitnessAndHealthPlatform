@@ -57,19 +57,19 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<Recipe> recipeList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user",cascade = CascadeType.REMOVE,fetch = FetchType.LAZY,orphanRemoval = true)
     private List<Like> likeList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user",cascade = CascadeType.REMOVE,fetch = FetchType.LAZY)
     private List<Comment> commentList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user",cascade = CascadeType.REMOVE,fetch = FetchType.EAGER)
     private List<Favorite> favoriteList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "follower", cascade = CascadeType.REMOVE,fetch = FetchType.EAGER)
     private List<Follow> followers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "following",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "following",cascade = CascadeType.REMOVE,fetch = FetchType.EAGER)
     private List<Follow> following = new ArrayList<>();
 
     @PrePersist
@@ -79,17 +79,5 @@ public class User implements UserDetails {
         }
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", email='" + email + '\'' +
-                ", height=" + height +
-                ", weight=" + weight +
-                ", password='" + password + '\'' +
-                ", BMI=" + BMI +
-                ", createdAt=" + createdAt +
-                '}';
-    }
+
 }

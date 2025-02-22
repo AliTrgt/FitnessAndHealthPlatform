@@ -49,7 +49,7 @@ public class Recipe {
     @NotNull
     private int likeCount;
 
-    @ToString.Exclude
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")
     private User user;
@@ -62,10 +62,10 @@ public class Recipe {
     )
     private List<Ingredient> ingredientList;
 
-    @OneToMany(mappedBy = "recipe",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "recipe",cascade = CascadeType.REMOVE,fetch = FetchType.EAGER)
     private List<Like> likeList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "recipe",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "recipe",cascade = CascadeType.REMOVE,fetch = FetchType.EAGER)
     private List<Comment> commentList = new ArrayList<>();
 
     @PrePersist
@@ -75,17 +75,5 @@ public class Recipe {
         }
     }
 
-    @Override
-    public String toString() {
-        return "Recipe{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", calories=" + calories +
-                ", createdAt=" + createdAt +
-                ", description='" + description + '\'' +
-                ", instructions='" + instructions + '\'' +
-                ", likeCount=" + likeCount +
-                ", prepTime=" + prepTime +
-                '}';
-    }
+
 }

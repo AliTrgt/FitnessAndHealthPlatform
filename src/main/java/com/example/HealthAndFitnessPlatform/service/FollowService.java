@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,6 +42,12 @@ public class FollowService {
                 User follower = userRepository.findById(followerId).orElseThrow(() -> new UserNotFoundException("followerId not found : "+followerId));
                 User following = userRepository.findById(followingId).orElseThrow(() -> new UserNotFoundException("following not found : "+followingId));
 
+                Optional<Follow> followOptional = followRepository.findByFollowerIdAndFollowingId(followerId,followingId);
+
+                if (followOptional.isPresent()){
+                        throw new FollowNotException("You Already follow this user : "+followingId);
+                }
+                else {
                 Follow follow = new Follow();
                 follow.setFollower(follower);
                 follow.setFollowing(following);
@@ -48,6 +55,7 @@ public class FollowService {
                 Follow lastFollow = followRepository.save(follow);
 
                 return   modelMapper.map(lastFollow,FollowDTO.class);
+                }
         }
 
         public void unFollow(int followerId,int followingId){

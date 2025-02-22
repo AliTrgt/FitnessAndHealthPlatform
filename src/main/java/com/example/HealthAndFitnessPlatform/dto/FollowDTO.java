@@ -6,7 +6,7 @@ import lombok.Data;
 public class FollowDTO {
 
     private int id;
-    private int follower;
-    private int following;
+    private int followerId;
+    private int followingId;
 
 }

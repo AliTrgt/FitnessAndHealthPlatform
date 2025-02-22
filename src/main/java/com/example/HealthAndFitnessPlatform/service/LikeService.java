@@ -72,10 +72,8 @@ public class LikeService {
             recipe.setLikeCount(Math.max(recipe.getLikeCount() - 1, 0));
             recipeRepository.save(recipe);
 
-            likeRepository.deleteById(like.getId());
+            likeRepository.delete(like);
     }
-
-
 
     @Transactional
     public LikeDTO toggleLike(int userId,int recipeId){

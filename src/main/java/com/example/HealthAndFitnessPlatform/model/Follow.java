@@ -21,11 +21,9 @@ public class Follow {
     private int id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "follower")
     private User follower;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "following")
     private User following;
 
 

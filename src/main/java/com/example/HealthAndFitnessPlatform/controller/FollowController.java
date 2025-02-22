@@ -26,15 +26,15 @@ public class FollowController {
             return new ResponseEntity<>(followList, HttpStatus.OK);
     }
 
-    @PostMapping("/follow")
-    public ResponseEntity<FollowDTO> follow(@RequestParam int followerId,@RequestParam int followingId){
-            FollowDTO followDTO = followService.follow(followerId,followingId);
+    @PostMapping
+    public ResponseEntity<FollowDTO> follow(@RequestBody FollowDTO follow){
+            FollowDTO followDTO = followService.follow(follow.getFollowerId(),follow.getFollowingId());
             return new ResponseEntity<>(followDTO,HttpStatus.CREATED);
     }
 
-    @PostMapping("/unfollow")
-    public ResponseEntity<Void> unFollow(@RequestParam int followerId,@RequestParam int followingId){
-             followService.unFollow(followerId,followingId);
+    @DeleteMapping
+    public ResponseEntity<Void> unFollow(@RequestBody FollowDTO follow){
+             followService.unFollow(follow.getFollowerId(),follow.getFollowingId());
              return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
