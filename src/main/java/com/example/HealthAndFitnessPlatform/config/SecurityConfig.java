@@ -39,12 +39,14 @@ public class SecurityConfig {
          return   http
                     .authorizeHttpRequests(
                             x ->
-                                    x.anyRequest().permitAll()
+                                    x.requestMatchers("/v1/user/create").permitAll()
+                                            .anyRequest().authenticated()
                     )
                     .headers(headers -> headers.disable())
                     .sessionManagement(x -> x.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                     .authenticationProvider(authenticationProvider())
                     .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
+                    .csrf(AbstractHttpConfigurer::disable)
                     .build();
     }
 
@@ -60,7 +62,4 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception{
                 return authenticationConfiguration.getAuthenticationManager();
     }
-
-
-
 }
