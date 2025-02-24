@@ -28,7 +28,6 @@ public class SecurityConfig {
         this.authFilter = authFilter;
     }
 
-
     @Bean
     public PasswordEncoder passwordEncoder(){
             return new BCryptPasswordEncoder();
@@ -39,7 +38,7 @@ public class SecurityConfig {
          return   http
                     .authorizeHttpRequests(
                             x ->
-                                    x.requestMatchers("/v1/user/create").permitAll()
+                                    x.requestMatchers("/v1/user/create","/v1/user").permitAll()
                                             .anyRequest().authenticated()
                     )
                     .headers(headers -> headers.disable())
