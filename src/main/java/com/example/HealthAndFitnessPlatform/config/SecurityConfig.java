@@ -38,8 +38,8 @@ public class SecurityConfig {
          return   http
                     .authorizeHttpRequests(
                             x ->
-                                    x.requestMatchers("/v1/user/create","/v1/user").permitAll()
-                                            .anyRequest().authenticated()
+                                    x
+                                            .anyRequest().permitAll()
                     )
                     .headers(headers -> headers.disable())
                     .sessionManagement(x -> x.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

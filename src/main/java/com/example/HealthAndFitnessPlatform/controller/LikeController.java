@@ -1,7 +1,9 @@
 package com.example.HealthAndFitnessPlatform.controller;
 
 import com.example.HealthAndFitnessPlatform.dto.LikeDTO;
+import com.example.HealthAndFitnessPlatform.model.Like;
 import com.example.HealthAndFitnessPlatform.service.LikeService;
+import org.springframework.boot.autoconfigure.batch.BatchTransactionManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +20,7 @@ public class LikeController {
             this.likeService = likeService;
         }
 
-        @GetMapping("/getAll")
+        @GetMapping
         public ResponseEntity<List<LikeDTO>> getAllLike(){
                 List<LikeDTO> likeList = likeService.getAllLike();
                 return new ResponseEntity<>(likeList, HttpStatus.OK);
@@ -40,6 +42,12 @@ public class LikeController {
         public ResponseEntity<LikeDTO> toggleLike(@RequestBody LikeDTO likeDTO){
                 LikeDTO like = likeService.toggleLike(likeDTO.getUserId(),likeDTO.getRecipeId());
                 return new ResponseEntity<>(like,HttpStatus.CREATED);
+        }
+
+        @GetMapping("/user/{userId}")
+        public ResponseEntity<LikeDTO> findLikeByUserId(@PathVariable int userId){
+                 LikeDTO like = likeService.findLikeByUserId(userId);
+                 return new ResponseEntity<>(like,HttpStatus.OK);
         }
 
 

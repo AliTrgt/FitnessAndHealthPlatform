@@ -88,5 +88,9 @@ public class FavoriteService {
 
     }
 
+    public FavoriteDTO findByUserId(int userId){
+            Favorite favorite = favoriteRepository.findByUserId(userId);
+            return modelMapper.map(favorite,FavoriteDTO.class);
+    }
 
 }

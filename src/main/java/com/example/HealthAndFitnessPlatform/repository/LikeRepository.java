@@ -14,5 +14,5 @@ public interface LikeRepository extends JpaRepository<Like,Integer> {
 
     boolean existsLikeByUserIdAndRecipeId(int userId,int recipeId);
 
-
+    Like findLikeByUserId(int userId);
 }

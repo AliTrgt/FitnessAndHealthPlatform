@@ -13,4 +13,5 @@ public interface FavoriteRepository extends JpaRepository<Favorite,Integer> {
 
         Optional<Favorite> findByUserIdAndRecipeId(int userId, int recipeId);
 
+        Favorite findByUserId(int userId);
 }

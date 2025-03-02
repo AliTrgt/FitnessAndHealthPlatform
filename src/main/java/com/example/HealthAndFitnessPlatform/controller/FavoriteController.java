@@ -5,6 +5,7 @@ import com.example.HealthAndFitnessPlatform.model.Favorite;
 import com.example.HealthAndFitnessPlatform.service.FavoriteService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -41,6 +42,12 @@ public class FavoriteController {
     public ResponseEntity<Void> deleteFavorite(@RequestBody FavoriteDTO favoriteDTO){
             favoriteService.deleteFavorite(favoriteDTO.getUserId(),favoriteDTO.getRecipeId());
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<FavoriteDTO> findByUserId(@PathVariable int userId){
+            FavoriteDTO favorite = favoriteService.findByUserId(userId);
+            return new ResponseEntity<>(favorite,HttpStatus.OK);
     }
 
 }

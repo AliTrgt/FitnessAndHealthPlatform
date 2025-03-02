@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class RecipeService {
-
     private final RecipeRepository recipeRepository;
     private final ModelMapper modelMapper;
 

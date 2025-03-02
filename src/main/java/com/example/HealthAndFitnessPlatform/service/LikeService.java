@@ -99,4 +99,9 @@ public class LikeService {
         }
     }
 
+    public LikeDTO findLikeByUserId(int userId){
+            Like like = likeRepository.findLikeByUserId(userId);
+            return modelMapper.map(like,LikeDTO.class);
+    }
+
 }
