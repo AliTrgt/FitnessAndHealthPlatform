@@ -19,7 +19,6 @@ public class RecipeController {
 
     private final RecipeService recipeService;
 
-
     public RecipeController(RecipeService recipeService) {
         this.recipeService = recipeService;
     }
@@ -54,5 +53,10 @@ public class RecipeController {
                 return  new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @GetMapping("/rec/{userId}")
+    public ResponseEntity<List<RecipeDTO>> getRecommendation(@PathVariable int userId){
+             List<RecipeDTO> recipeList = recipeService.getRecommendations(userId);
+             return new ResponseEntity<>(recipeList,HttpStatus.OK);
+    }
 
 }
