@@ -40,6 +40,7 @@ public class RecipeService {
                     .collect(Collectors.toList());
     }
 
+
     public RecipeDTO findById(int recipeId){
            Recipe recipe =  recipeRepository.findById(recipeId).orElseThrow(() -> new RecipeNotFoundException("Recipe id not found : "+recipeId));
            return modelMapper.map(recipe,RecipeDTO.class);
