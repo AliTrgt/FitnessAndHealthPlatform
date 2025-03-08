@@ -39,6 +39,7 @@ public class SecurityConfig {
                     .authorizeHttpRequests(
                             x ->
                                     x
+                                            .requestMatchers("/v1/user/login","/v1/user/create").permitAll()
                                             .anyRequest().permitAll()
                     )
                     .headers(headers -> headers.disable())
