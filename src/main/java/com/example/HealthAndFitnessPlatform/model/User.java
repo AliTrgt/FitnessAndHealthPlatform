@@ -1,6 +1,7 @@
 package com.example.HealthAndFitnessPlatform.model;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.micrometer.common.lang.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -54,6 +55,7 @@ public class User implements UserDetails {
     private double BMI;
 
     @Column(name = "createdAt")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.EAGER)

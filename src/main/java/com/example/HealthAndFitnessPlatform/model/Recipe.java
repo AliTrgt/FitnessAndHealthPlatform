@@ -1,6 +1,7 @@
 package com.example.HealthAndFitnessPlatform.model;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
@@ -43,7 +44,7 @@ public class Recipe {
     @NotNull
     @Max(1500)
     private double calories;
-
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @NotNull
