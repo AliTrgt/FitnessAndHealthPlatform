@@ -67,6 +67,7 @@ public class UserService {
             tempUser.setProfilePhoto(userDTO.getProfilePhoto());
             tempUser.setHeight(userDTO.getHeight());
             tempUser.setWeight(userDTO.getWeight());
+            tempUser.setGender(userDTO.getGender());
 
             User lastUser = userRepository.save(tempUser);
             return modelMapper.map(lastUser,UserDTO.class);

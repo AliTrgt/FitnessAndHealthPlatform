@@ -1,5 +1,6 @@
 package com.example.HealthAndFitnessPlatform.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.ToString;
 
@@ -15,6 +16,7 @@ public class RecipeDTO {
     private String instructions;
     private int prepTime;
     private double calories;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
     private int likeCount;
     private int userId;

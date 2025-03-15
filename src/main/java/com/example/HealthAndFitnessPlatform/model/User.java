@@ -49,6 +49,8 @@ public class User implements UserDetails {
     @Max(200)
     private double weight;
 
+    private String gender;
+
     private double BMI;
 
     @Column(name = "createdAt")
