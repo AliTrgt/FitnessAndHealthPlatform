@@ -52,6 +52,8 @@ public class User implements UserDetails {
 
     private String gender;
 
+    private int age;
+
     private double BMI;
 
     @Column(name = "createdAt")

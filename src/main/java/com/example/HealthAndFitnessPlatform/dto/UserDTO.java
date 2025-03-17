@@ -20,6 +20,7 @@ public class UserDTO {
     private double height;
     private double weight;
     private String gender;
+    private int age;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
     private  List<RecipeDTO> recipeList;
