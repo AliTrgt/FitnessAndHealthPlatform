@@ -50,7 +50,6 @@ public class Recipe {
     @NotNull
     private int likeCount;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")
     private User user;

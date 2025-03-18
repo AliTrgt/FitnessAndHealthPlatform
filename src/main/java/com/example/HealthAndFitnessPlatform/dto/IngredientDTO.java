@@ -9,6 +9,6 @@ public class IngredientDTO {
 
     private int id;
     private String name;
-
+    private int quantity;
 
 }
