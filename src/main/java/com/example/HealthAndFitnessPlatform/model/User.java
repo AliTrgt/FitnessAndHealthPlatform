@@ -10,6 +10,7 @@ import org.hibernate.annotations.Formula;
 import org.springframework.beans.Mergeable;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.beans.Transient;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +36,7 @@ public class User implements UserDetails {
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "userId"),
             inverseJoinColumns = @JoinColumn(name = "roleId"))
-    private List<Role> authorities;
+    private List<Role> authorities = new ArrayList<>();
 
     @Email(message = "Invalid email try again !! ")
     @NotNull

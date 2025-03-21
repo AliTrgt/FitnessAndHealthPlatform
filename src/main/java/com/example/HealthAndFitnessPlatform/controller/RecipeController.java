@@ -35,6 +35,13 @@ public class RecipeController {
             return new ResponseEntity<>(recipeDTO,HttpStatus.OK);
     }
 
+    @GetMapping("/find/{userId}")
+    public ResponseEntity<List<RecipeDTO>> getRecipesByUserId(@PathVariable int userId){
+            List<RecipeDTO> recipeList  = recipeService.getRecipesByUserId(userId);
+            return new ResponseEntity<>(recipeList,HttpStatus.OK);
+    }
+
+
     @PostMapping("/create")
     public ResponseEntity<RecipeDTO> createRecipe(@Valid @RequestBody RecipeDTO recipe){
             RecipeDTO savedUser = recipeService.createRecipe(recipe);

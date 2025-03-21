@@ -72,6 +72,14 @@ public class RecipeService {
             recipeRepository.delete(lastRecipe);
     }
 
+    public List<RecipeDTO> getRecipesByUserId(int userId){
+            List<Recipe> recipeList = recipeRepository.getRecipesByUserId(userId);
+            return recipeList
+                    .stream()
+                    .map(recipe -> modelMapper.map(recipe,RecipeDTO.class))
+                    .collect(Collectors.toList());
+    }
+
     public List<RecipeDTO> getRecommendations(int userId){
         String lastURL = RECIPE_URL + "/"+ userId;
         ResponseEntity<List<RecipeDTO>> listResponseEntity = restTemplate.exchange(lastURL, HttpMethod.GET, null, new ParameterizedTypeReference<List<RecipeDTO>>(){});
