@@ -10,7 +10,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "ingredientTBL")
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class Ingredient {
@@ -24,7 +25,7 @@ public class Ingredient {
 
     private int quantity;
 
-    @ManyToMany(mappedBy = "ingredientList",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "ingredientList",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<Recipe> recipeList;
 
 }

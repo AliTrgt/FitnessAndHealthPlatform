@@ -17,7 +17,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "userTBL")
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class User implements UserDetails {
@@ -86,5 +87,15 @@ public class User implements UserDetails {
         }
     }
 
-
+    @Override
+    public String toString() {
+        return "User{" +
+                "username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", height=" + height +
+                ", weight=" + weight +
+                ", age=" + age +
+                ", gender='" + gender + '\'' +
+                '}';
+    }
 }

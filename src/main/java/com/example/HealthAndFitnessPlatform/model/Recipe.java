@@ -16,7 +16,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "recipeTBL")
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class Recipe {
@@ -53,7 +54,7 @@ public class Recipe {
     @JoinColumn(name = "userId")
     private User user;
 
-    @ManyToMany(cascade = CascadeType.MERGE,fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.MERGE,fetch = FetchType.LAZY)
     @JoinTable(
             name = "recipeIngredients",
             joinColumns = @JoinColumn(name = "recipeId"),
