@@ -19,7 +19,6 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @RequiredArgsConstructor
-@ToString
 public class Recipe {
 
     @Id
@@ -74,6 +73,7 @@ public class Recipe {
             this.createdAt = LocalDateTime.now();
         }
     }
+
 
 
 }
