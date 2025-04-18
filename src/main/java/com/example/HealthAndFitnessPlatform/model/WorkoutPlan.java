@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Formula;
 
 @Entity
 @AllArgsConstructor
@@ -20,5 +21,13 @@ public class WorkoutPlan {
     private WorkoutType workoutType;
 
     private int duration;
+
+    private int burningCalories;
+
+    @PrePersist
+    @PreUpdate
+    public void calculateBurningCalories() {
+        this.burningCalories = duration * workoutType.getCaloriesBurnedPerMinute();
+    }
 
 }
