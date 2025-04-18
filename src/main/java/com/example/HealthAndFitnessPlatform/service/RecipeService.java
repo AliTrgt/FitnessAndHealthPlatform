@@ -1,9 +1,12 @@
 package com.example.HealthAndFitnessPlatform.service;
 
+import com.example.HealthAndFitnessPlatform.dto.IngredientDTO;
 import com.example.HealthAndFitnessPlatform.dto.RecipeDTO;
 import com.example.HealthAndFitnessPlatform.exception.RecipeNotFoundException;
+import com.example.HealthAndFitnessPlatform.model.Ingredient;
 import com.example.HealthAndFitnessPlatform.model.Recipe;
 import com.example.HealthAndFitnessPlatform.model.User;
+import com.example.HealthAndFitnessPlatform.repository.IngredientRepository;
 import com.example.HealthAndFitnessPlatform.repository.RecipeRepository;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
@@ -25,11 +28,13 @@ public class RecipeService {
     private final RecipeRepository recipeRepository;
     private final ModelMapper modelMapper;
     private final RestTemplate restTemplate;
+    private final IngredientRepository ingredientRepository;
 
-    public RecipeService(RecipeRepository recipeRepository, ModelMapper modelMapper, RestTemplate restTemplate) {
+    public RecipeService(RecipeRepository recipeRepository, ModelMapper modelMapper, RestTemplate restTemplate, IngredientRepository ingredientRepository) {
         this.recipeRepository = recipeRepository;
         this.modelMapper = modelMapper;
         this.restTemplate = restTemplate;
+        this.ingredientRepository = ingredientRepository;
     }
 
     public List<RecipeDTO> getAllRecipes(){
@@ -63,7 +68,6 @@ public class RecipeService {
             firstRecipe.setLikeCount(recipe.getLikeCount());
 
             Recipe lastRecipe = recipeRepository.save(firstRecipe);
-
             return modelMapper.map(lastRecipe,RecipeDTO.class);
     }
 

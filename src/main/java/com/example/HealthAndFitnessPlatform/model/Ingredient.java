@@ -28,4 +28,8 @@ public class Ingredient {
     @ManyToMany(mappedBy = "ingredientList",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<Recipe> recipeList;
 
+    public Ingredient(String name, int quantity) {
+        this.name = name;
+        this.quantity = quantity;
+    }
 }

@@ -54,7 +54,7 @@ public class Recipe {
     @JoinColumn(name = "userId")
     private User user;
 
-    @ManyToMany(cascade = CascadeType.MERGE,fetch = FetchType.LAZY)
+    @ManyToMany(cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
     @JoinTable(
             name = "recipeIngredients",
             joinColumns = @JoinColumn(name = "recipeId"),
