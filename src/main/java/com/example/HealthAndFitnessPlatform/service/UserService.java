@@ -69,6 +69,7 @@ public class UserService {
             tempUser.setWeight(userDTO.getWeight());
             tempUser.setGender(userDTO.getGender());
             tempUser.setAge(userDTO.getAge());
+            tempUser.setProfilePhoto(userDTO.getProfilePhoto());
 
             User lastUser = userRepository.save(tempUser);
             return modelMapper.map(lastUser,UserDTO.class);
@@ -105,6 +106,15 @@ public class UserService {
         user.setBMI(newValue);
         userRepository.save(user);
         return "BMI Score SuccessFully Updated";
+    }
+
+    public void updateProfilePhoto(int userId,String imagePath){
+            Optional<User> user = userRepository.findById(userId);
+            if(user.isPresent()){
+                        User lastUser = user.get();
+                        lastUser.setProfilePhoto(imagePath);
+                        userRepository.save(lastUser);
+            }
     }
 
 }

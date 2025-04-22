@@ -15,7 +15,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -27,12 +29,14 @@ public class UserController {
     private final UserRepository userRepository;
     private final JwtService jwtService;
     private final ModelMapper modelMapper;
+    private final ImageUploadController imageUploadController;
 
-    public UserController(UserService userService, UserRepository userRepository, JwtService jwtService, ModelMapper modelMapper) {
+    public UserController(UserService userService, UserRepository userRepository, JwtService jwtService, ModelMapper modelMapper, ImageUploadController imageUploadController) {
         this.userService = userService;
         this.userRepository = userRepository;
         this.jwtService = jwtService;
         this.modelMapper = modelMapper;
+        this.imageUploadController = imageUploadController;
     }
 
     @GetMapping
@@ -89,6 +93,15 @@ public class UserController {
     @PostMapping("/change/{userId}")
     public void changeBmiScore(@PathVariable int userId, @RequestBody BmiUpdateRequest bmiUpdateRequest){
              userService.changeBmiValue(userId,bmiUpdateRequest.getNewValue());
+    }
+
+    @PostMapping("/upload/{userId}")
+    public ResponseEntity<String> uploadUserProfilePhoto(@PathVariable int userId, @RequestParam("file") MultipartFile file) throws IOException {
+                    String filePath = imageUploadController.saveImage(file);
+
+                    userService.updateProfilePhoto(userId,filePath);
+
+                    return ResponseEntity.ok("Profile Photo updated :  " + filePath);
     }
 
 }

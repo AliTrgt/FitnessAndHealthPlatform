@@ -9,7 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -18,9 +20,11 @@ import java.util.List;
 public class RecipeController {
 
     private final RecipeService recipeService;
+    private final ImageUploadController imageUploadController;
 
-    public RecipeController(RecipeService recipeService) {
+    public RecipeController(RecipeService recipeService, ImageUploadController imageUploadController) {
         this.recipeService = recipeService;
+        this.imageUploadController = imageUploadController;
     }
 
     @GetMapping
@@ -64,6 +68,18 @@ public class RecipeController {
     public ResponseEntity<List<RecipeDTO>> getRecommendation(@PathVariable int userId){
              List<RecipeDTO> recipeList = recipeService.getRecommendations(userId);
              return new ResponseEntity<>(recipeList,HttpStatus.OK);
+    }
+
+
+    @PostMapping("/upload/{recipeId}")
+    public ResponseEntity<String> uploadRecipeImages(@PathVariable int recipeId, @RequestParam("file") MultipartFile file) throws IOException {
+
+            String filePath = imageUploadController.saveImage(file);
+
+            recipeService.updateRecipeImage(recipeId,filePath);
+
+            return ResponseEntity.ok("Recipe Photo Uploaded : "+filePath);
+
     }
 
 }

@@ -15,10 +15,12 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -66,6 +68,7 @@ public class RecipeService {
             firstRecipe.setTitle(recipe.getTitle());
             firstRecipe.setPrepTime(recipe.getPrepTime());
             firstRecipe.setLikeCount(recipe.getLikeCount());
+            firstRecipe.setImageUrl(recipe.getImageUrl());
 
             Recipe lastRecipe = recipeRepository.save(firstRecipe);
             return modelMapper.map(lastRecipe,RecipeDTO.class);
@@ -99,5 +102,15 @@ public class RecipeService {
             RecipeDTO[] recipes = responseEntity.getBody();
             return Arrays.asList(recipes).stream().collect(Collectors.toList());
     } */
+
+    public void updateRecipeImage(int recipeId, String imagePath){
+        Optional<Recipe> recipe = recipeRepository.findById(recipeId);
+        if(recipe.isPresent()){
+                Recipe lastRecipe = recipe.get();
+                lastRecipe.setImageUrl(imagePath);
+                recipeRepository.save(lastRecipe);
+        }
+
+    }
 
 }

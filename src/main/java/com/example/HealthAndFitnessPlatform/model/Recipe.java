@@ -50,6 +50,8 @@ public class Recipe {
     @NotNull
     private int likeCount;
 
+    private String imageUrl;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")
     private User user;
