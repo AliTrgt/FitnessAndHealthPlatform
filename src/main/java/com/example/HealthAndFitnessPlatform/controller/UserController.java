@@ -2,6 +2,7 @@ package com.example.HealthAndFitnessPlatform.controller;
 
 
 import com.example.HealthAndFitnessPlatform.dto.AuthRequest;
+import com.example.HealthAndFitnessPlatform.dto.BmiUpdateRequest;
 import com.example.HealthAndFitnessPlatform.dto.UserDTO;
 import com.example.HealthAndFitnessPlatform.model.User;
 import com.example.HealthAndFitnessPlatform.repository.UserRepository;
@@ -83,6 +84,11 @@ public class UserController {
         User user = userRepository.findByUsername(username);
 
         return modelMapper.map(user,UserDTO.class);
+    }
+
+    @PostMapping("/change/{userId}")
+    public void changeBmiScore(@PathVariable int userId, @RequestBody BmiUpdateRequest bmiUpdateRequest){
+             userService.changeBmiValue(userId,bmiUpdateRequest.getNewValue());
     }
 
 }

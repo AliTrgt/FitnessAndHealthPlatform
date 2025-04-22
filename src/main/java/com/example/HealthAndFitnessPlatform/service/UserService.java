@@ -100,4 +100,11 @@ public class UserService {
             throw new UsernameNotFoundException("Invalid Username : "+authRequest.username());
     }
 
+    public String changeBmiValue(int userId,double newValue){
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User Id Not Found : "+userId));
+        user.setBMI(newValue);
+        userRepository.save(user);
+        return "BMI Score SuccessFully Updated";
+    }
+
 }
