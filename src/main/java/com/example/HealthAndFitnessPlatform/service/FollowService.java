@@ -65,4 +65,8 @@ public class FollowService {
         }
 
 
+        public boolean isFollowing(int followerId,int followingId){
+                        return followRepository.existsByFollowerIdAndFollowingId(followerId,followingId);
+        }
+
 }

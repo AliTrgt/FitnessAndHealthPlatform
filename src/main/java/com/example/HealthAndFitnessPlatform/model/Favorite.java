@@ -22,7 +22,7 @@ public class Favorite {
     @JoinColumn(name = "userId")
     private User user;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "recipeId")
     private Recipe recipe;
 

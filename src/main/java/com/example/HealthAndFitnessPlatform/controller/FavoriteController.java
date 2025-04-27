@@ -50,4 +50,16 @@ public class FavoriteController {
             return new ResponseEntity<>(favorite,HttpStatus.OK);
     }
 
+
+    @GetMapping("/list/{userId}")
+    public ResponseEntity<List<FavoriteDTO>> findFavoriteById(@PathVariable int userId){
+            List<FavoriteDTO> favorites = favoriteService.findFavoritesByUserId(userId);
+            return new ResponseEntity<>(favorites,HttpStatus.OK);
+    }
+
+    @GetMapping("/isFavorite")
+    public boolean existByUserIdAndRecipe(@RequestParam int userId,@RequestParam int recipeId){
+            return favoriteService.existByUserIdAndRecipe(userId,recipeId);
+    }
+
 }

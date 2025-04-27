@@ -93,4 +93,17 @@ public class FavoriteService {
             return modelMapper.map(favorite,FavoriteDTO.class);
     }
 
+
+    public List<FavoriteDTO> findFavoritesByUserId(int userId){
+            List<Favorite> favorites =  favoriteRepository.findFavoritesByUserId(userId);
+            return favorites
+                    .stream()
+                    .map(favorite -> modelMapper.map(favorite,FavoriteDTO.class))
+                    .collect(Collectors.toList());
+    }
+
+    public boolean existByUserIdAndRecipe(int userId,int recipeId){
+            return favoriteRepository.existsByUserIdAndRecipeId(userId,recipeId);
+    }
+
 }

@@ -50,5 +50,11 @@ public class LikeController {
                  return new ResponseEntity<>(like,HttpStatus.OK);
         }
 
+        @GetMapping("/getLikesById/{userId}")
+        public ResponseEntity<List<LikeDTO>> findLikesByUserId(@PathVariable int userId){
+                        List<LikeDTO> likes = likeService.findLikesByUserId(userId);
+                        return new ResponseEntity<>(likes,HttpStatus.OK);
+        }
+
 
 }

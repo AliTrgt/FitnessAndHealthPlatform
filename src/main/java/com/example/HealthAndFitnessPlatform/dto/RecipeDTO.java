@@ -19,7 +19,9 @@ public class RecipeDTO {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
     private int likeCount;
+
     private String imageUrl;
+
     private int userId;
     private List<IngredientDTO> ingredientList;
     private List<LikeDTO> likeList;

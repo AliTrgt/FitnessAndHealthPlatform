@@ -38,4 +38,9 @@ public class FollowController {
              return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @GetMapping("/isFollow")
+    public boolean isFollow(@RequestParam int followerId,@RequestParam int followingId){
+            return followService.isFollowing(followerId,followingId);
+    }
+
 }

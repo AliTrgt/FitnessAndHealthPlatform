@@ -104,4 +104,12 @@ public class LikeService {
             return modelMapper.map(like,LikeDTO.class);
     }
 
+    public List<LikeDTO> findLikesByUserId(int userId){
+            List<Like> likes = likeRepository.findLikesByUserId(userId);
+            return likes
+                    .stream()
+                    .map(like -> modelMapper.map(like,LikeDTO.class))
+                    .collect(Collectors.toList());
+    }
+
 }
