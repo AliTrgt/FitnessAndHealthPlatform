@@ -1,0 +1,36 @@
+<main class="min-h-screen bg-gradient-to-b from-green-50 to-gray-50 pt-20 pb-16"> <!-- pt-16 (64px) + 4px ekstra güvenlik için -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    
+    <!-- Öneri Sistemi Başlık -->
+    <div class="text-center mb-10 pt-4"> <!-- Ekstra pt-4 eklendi -->
+      <h2 class="text-3xl font-bold bg-gradient-to-r from-green-700 to-green-500 bg-clip-text text-transparent">
+        Sizin İçin Öneriler
+      </h2>
+      <p class="mt-2 text-green-600">Sağlıklı yaşam alışkanlıklarınıza göre özel seçilmiş ürünler</p>
+    </div>
+    
+    <!-- Öneri Butonu -->
+    <div class="flex justify-center mb-8">
+      <button 
+        (click)="getRecommendations()"
+        [class.hidden]="showRecommendations"
+        class="recommendation-button flex items-center bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition-all">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+        </svg>
+        Bana Özel Öneriler
+      </button>
+    </div>
+    
+    <!-- Yükleme Animasyonu -->
+    <div *ngIf="isLoading" id="loadingAnimation">
+      <!-- Mevcut yükleme animasyonu içeriği -->
+    </div>
+    
+    <!-- Öneri Sonuçları -->
+    <div *ngIf="showRecommendations" id="recommendationResults" class="fade-in">
+      <!-- Orijinal içerik -->
+    </div>
+    
+  </div>
+</main>

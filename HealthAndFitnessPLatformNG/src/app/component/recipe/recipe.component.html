@@ -1,0 +1,164 @@
+<div class="min-h-screen bg-gradient-to-b from-green-50 to-gray-50">
+  <main *ngIf="recipe" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mt-5">
+    <!-- Tarif Başlık ve Fotoğraf -->
+    <div class="mb-8">
+      <div class="flex justify-between items-start mb-4">
+        <h1 class="text-4xl font-bold text-green-900"> {{recipe.title}} </h1>
+        <!-- Favori Butonu -->
+        <button (click) ="toggleFavoriteButton()" *ngIf="!isFavorited" class="p-2 text-red-500 hover:text-red-600 transition-colors group">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+              d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+              class="group-hover:fill-red-100 transition-colors" />
+          </svg>
+        </button>
+        <button (click) ="toggleFavoriteButton()" *ngIf="isFavorited" class="p-2 text-red-500 hover:text-red-600 transition-colors">
+          <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+            <path
+              d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 
+                 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 
+                 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 
+                 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+          </svg>
+        </button>
+        
+      </div>
+
+      <div class="relative rounded-2xl overflow-hidden shadow-lg w-full max-w-3xl mx-auto">
+        <img 
+          src="{{recipe.imageUrl}}" 
+          alt="Tarif görseli" 
+          class="w-full h-auto object-cover rounded-2xl"
+        />
+        <!-- Etiketler -->
+        <div class="absolute bottom-4 left-4 flex space-x-3">
+          <span class="bg-white px-3 py-1 rounded-full text-sm font-medium text-green-700 shadow-sm">
+            🕒 {{recipe.prepTime}} Dakika
+          </span>
+          <span class="bg-white px-3 py-1 rounded-full text-sm font-medium text-green-700 shadow-sm">
+            🔥 {{recipe.calories}} Kalori
+          </span>
+        </div>
+      </div>
+      
+    </div>
+
+    <!-- Ana İçerik -->
+    <div class="grid lg:grid-cols-3 gap-8">
+      <!-- Malzemeler -->
+      <div class="lg:col-span-1">
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-green-100 sticky top-8">
+          <h2 class="text-2xl font-bold text-green-900 mb-6">Malzemeler</h2>
+          <div class="space-y-4">
+            <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg"
+              *ngFor="let ingredient of recipe.ingredientList">
+              <span class="text-green-700"> {{ingredient.name}} </span>
+              <span class="text-green-900 font-medium"> {{ingredient.quantity}} adet</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hazırlanış -->
+      <div class="lg:col-span-2">
+        <div class="bg-white p-8 rounded-xl shadow-sm border border-green-100">
+          <h2 class="text-2xl font-bold text-green-900 mb-6"> {{recipe.description}} </h2>
+          <div class="space-y-6">
+            <!-- Adım 1 -->
+            <div class="flex" *ngFor="let instruction of recipe.instructions.split('\n'); let i = index">
+              <div class="flex-shrink-0">
+                <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center text-white font-bold">
+                  {{i + 1}}
+                </div>
+              </div>
+              <div class="ml-4">
+                <p class="text-green-700 leading-relaxed">
+                  {{instruction}}
+                </p>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Besin Değerleri -->
+          <div class="mt-8 pt-6 border-t border-green-100">
+            <h3 class="text-xl font-bold text-green-900 mb-4">Besin Değerleri (Porsiyon)</h3>
+            <div class="grid grid-cols-2 gap-4">
+              <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                <span class="text-green-600">Kalori</span>
+                <span class="text-green-900 font-medium"> {{recipe.calories}} kcal</span>
+              </div>
+             
+            </div>
+          </div>
+        </div>
+
+
+        <div class="mt-8 bg-white p-6 rounded-xl shadow-sm border border-green-100">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-xl font-bold text-green-900"> {{recipe.commentList.length}} Yorum</h3>
+            <button (click)="popUp()"
+              class="flex items-center bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
+              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              </svg>
+              Yorum Yap
+            </button>
+          </div>
+          <form [formGroup]="commentSectionForm" (ngSubmit)="createComment()">
+            <div class="flex-1 mb-2" *ngIf="isOpen">
+              <textarea formControlName="content" rows="4"
+                class="w-full px-4 py-3 text-green-700 bg-green-50 rounded-lg border border-green-200 focus:ring-2 focus:ring-green-300 focus:border-green-300 outline-none transition"
+                placeholder="Yorumunuzu buraya yazın..." required></textarea>
+
+              <div class="flex justify-end gap-4 mt-3"> <!-- gap-4 eklendi -->
+                <button type="button" (click)="popUp()"
+                  class="px-4 py-2 text-green-700 bg-white border border-green-300 rounded-lg hover:bg-green-50 transition">
+                  İptal
+                </button>
+                <button [disabled]="commentSectionForm.invalid"
+                  class="px-4 py-2 text-white bg-green-600 rounded-lg hover:bg-green-700 transition flex items-center">
+                  <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                  Kaydet
+                </button>
+              </div>
+            </div>
+
+            <!-- Yorum Listesi -->
+            <div class="space-y-4">
+              <div class="flex items-start space-x-4" *ngFor="let comment of recipe.commentList; let i = index">
+                <img [routerLink]="['/userprofile',comment.userId]"
+                src="https://randomuser.me/api/portraits/women/44.jpg"
+                class="w-10 h-10 rounded-full border-2 border-green-200 cursor-pointer">
+                <div class="flex-1">
+                  <div class="bg-green-50 p-4 rounded-lg">
+                    <!-- Kullanıcı adı ve zaman bilgisi aynı satırda, zaman sağda hizalı -->
+                    <div class="flex items-center justify-between mb-2">
+                      <span [routerLink]="['/userprofile',comment.userId]" class="font-medium text-green-900">{{usernameList[i]}} </span>
+                      <span class="text-sm text-green-500">{{comment.createdAt | dateAgo}}</span>
+                    </div>
+                    <!-- Yorum içeriği ve silme butonu aynı satırda -->
+                    <div class="flex items-center justify-between">
+                      <p class="text-green-700 flex-1">{{comment.content}}</p>
+                      <button type="button"  *ngIf="canDeleteComment(comment.userId)" (click)="deleteComment(comment.id)"
+                        class="flex-shrink-0 ml-4 flex items-center justify-center w-10 h-10 bg-red-100 hover:bg-red-200 text-red-800 rounded-lg transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m4-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

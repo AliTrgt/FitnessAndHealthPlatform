@@ -1,0 +1,335 @@
+<div class="min-h-screen bg-gradient-to-b from-green-50 to-gray-50" *ngIf="user">
+  <!-- Sidebar -->
+  <aside class="fixed left-0 top-16 h-[calc(100vh-4rem)] w-72 bg-white shadow-xl border-r border-green-100 z-40">
+    <div class="flex flex-col h-full p-6">
+      <!-- Logo -->
+      <div class="flex items-center space-x-3 mb-12">
+        <svg class="w-8 h-8 text-green-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
+        </svg>
+        <h1 class="text-2xl font-bold bg-gradient-to-r from-green-700 to-green-500 bg-clip-text text-transparent">
+          ActiveLife
+        </h1>
+      </div>
+
+      <!-- Profil Özet -->
+      <div class="flex flex-col items-center mb-8">
+        <img [src]="'http://localhost:8080/' + user.profilePhoto"
+          class="w-24 h-24 rounded-full object-cover shadow-md border border-green-300" />
+        @if (!isEditing) {
+        <h2 class="text-xl font-bold text-green-900 mb-1">{{user.username}}</h2>
+        }
+        @else {
+        <input type="text" [(ngModel)]="user.username"
+          class="w-full max-w-[6rem] px-3 py-2 text-green-900 border border-green-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-300 transition duration-200" />
+        }
+        <p class="text-sm text-green-600 mb-4" *ngFor="let role of user.authorities"> {{role.role.substring(5)}} </p>
+
+        <!-- Takipçi İstatistikleri -->
+        <div class="bg-green-50 rounded-lg p-3 w-full text-center">
+          <div class="flex justify-around items-center">
+            <div class="flex items-center space-x-2">
+              <svg class="w-4 h-4 text-green-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+              <div>
+                <div class="text-lg font-bold text-green-900"> {{user.followers.length}} </div>
+                <div class="text-xs text-green-600">Takipçi</div>
+              </div>
+            </div>
+
+            <div class="h-8 w-px bg-green-200"></div>
+
+            <div class="flex items-center space-x-2">
+              <svg class="w-4 h-4 text-green-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+              <div>
+                <div class="text-lg font-bold text-green-900"> {{user.following.length}} </div>
+                <div class="text-xs text-green-600">Takip Edilen</div>
+              </div>
+            </div>
+          </div>
+
+
+
+
+
+        </div>
+        <button
+          class="mt-4 px-4 py-2 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 transition-all duration-200 font-semibold hover:shadow-lg hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 hover:opacity-90"
+          routerLink="/followers">
+          Takipçi Takip edilen
+        </button>
+      </div>
+
+      <!-- Çıkış Butonu -->
+      <div class="mt-auto pt-6 border-t border-green-100">
+        <button routerLink="/homepage"
+          class="w-full flex items-center p-3 text-blue-600 hover:bg-blue-50 rounded-xl transition-all group mb-1">
+          <svg class="w-5 h-5 mr-3 group-hover:animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+          </svg>
+          Ana Sayfaya Dön
+        </button>
+
+        <!-- Çıkış Yap Butonu -->
+        <button (click)="logOut()"
+          class="w-full flex items-center p-3 text-red-600 hover:bg-red-50 rounded-xl transition-all group">
+          <svg class="w-5 h-5 mr-3 group-hover:animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+          </svg>
+          Çıkış Yap
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Ana İçerik -->
+  <main class="ml-72 pt-20 p-8">
+    <div class="max-w-5xl mx-auto">
+      <!-- Başlık ve Düzenle Butonu -->
+      <div class="flex justify-between items-center mb-8">
+        <div>
+          <h3 class="text-2xl font-bold text-green-900">Profil Dashboard</h3>
+          <p class="text-green-600">Son Güncelleme: 2 saat önce</p>
+        </div>
+        <button
+          class="flex items-center bg-green-600 text-white px-5 py-2.5 rounded-lg hover:bg-green-700 transition-all"
+          (click)="isEditing ? saveUser() : isEditing = true">
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+          </svg>
+          {{isEditing ? 'Kaydet' : 'Profili Düzenle'}}
+        </button>
+      </div>
+
+      <!-- Metrik Kartlar -->
+      <div class="grid grid-cols-4 gap-6 mb-8">
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-green-100">
+          <div class="text-green-600">Vücut Ağırlığı</div>
+          <div class="text-3xl font-bold text-green-900">{{user.weight}}kg</div>
+        </div>
+
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-green-100">
+          <div class="text-green-600">Boy Uzunluğu</div>
+          <div class="text-3xl font-bold text-green-900"> {{user.height}}cm </div>
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-green-100">
+          <div class="text-green-600">Toplam Aktivite Süresi</div>
+          <div class="text-3xl font-bold text-green-900"> {{getFormattedTime()}}</div>
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-green-100">
+          <div class="text-green-600">BMI</div>
+          <div class="text-3xl font-bold text-green-900"> {{currentBmi | number :'1.0-1'}} </div>
+          <div class="text-sm text-green-500">
+            {{
+            currentBmi < 18.5 ? 'Zayıf' : currentBmi>= 18.5 && currentBmi < 25 ? 'Sağlıklı' : currentBmi>= 25 &&
+                currentBmi < 30 ? 'Fazla kilolu' : 'Obez' }} </div>
+          </div>
+        </div>
+
+        <!-- Detaylı Bilgiler -->
+        <div class="grid grid-cols-2 gap-8">
+          <!-- Kişisel Bilgiler -->
+          <div class="bg-white p-6 rounded-xl shadow-sm border border-green-100">
+            <h4 class="text-lg font-semibold text-green-900 mb-4">Kişisel Bilgiler</h4>
+            <div class="space-y-3">
+              <div class="flex justify-between py-2 border-b border-green-50">
+                <span class="text-green-600">E-mail Adresi</span>
+                @if (!isEditing) {
+                <span class="text-green-900"> {{user.email}} </span>
+                }
+                @else {
+                <input type="email" [(ngModel)]="user.email"
+                  class="w-full text-right text-green-900 border border-green-200 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-300 transition duration-200" />
+                }
+              </div>
+              <div class="flex justify-between py-2 border-b border-green-50">
+                <span class="text-green-600">Boy</span>
+                @if (!isEditing) {
+                <span class="text-green-900">{{user.height}} cm</span>
+                }
+                @else {
+                <input type="number" [(ngModel)]="user.height"
+                  class="w-full max-w-[6rem] px-3 py-2 text-green-900 border border-green-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-300 transition duration-200" />
+                }
+              </div>
+              <div class="flex justify-between py-2 border-b border-green-50">
+                <span class="text-green-600">Vücut Ağırlığı</span>
+                @if (!isEditing) {
+                <span class="text-green-900">{{user.weight}} kg</span>
+                }
+                @else {
+                <input type="number" [(ngModel)]="user.weight"
+                  class="w-full max-w-[6rem] px-3 py-2 text-green-900 border border-green-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-300 transition duration-200" />
+                }
+              </div>
+              <div class="flex justify-between py-2 border-b border-green-50">
+                <span class="text-green-600">Cinsiyet</span>
+                <span class="text-green-900"> {{user.gender}} </span>
+              </div>
+              <div class="flex justify-between py-2">
+                <span class="text-green-600">Rol</span>
+                <span class="bg-green-100 text-green-700 px-2 py-1 rounded-full text-sm"
+                  *ngFor="let role of user.authorities"> {{role.role.substring(5)}} </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Son Aktiviteler -->
+          <div class="bg-white p-6 rounded-xl shadow-sm border border-green-100">
+            <h4 class="text-lg font-semibold text-green-900 mb-4">Son Aktiviteler</h4>
+            <div class="space-y-4">
+              @for (wplan of user.workoutPlans ; track wplan.id) {
+              <div class="flex items-center p-3 bg-green-50 rounded-lg">
+                <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center mr-3">
+                  <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                </div>
+                <div>
+                  <div class="text-sm font-medium text-green-900"> {{wplan.workoutType | lowercase}} antrenmanı</div>
+                  <div class="text-xs text-green-500"> {{wplan.duration}} dakika -- {{wplan.burningCalories.toFixed(1)}}
+                    kalori </div>
+                </div>
+              </div>
+              }
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-green-100 mb-8">
+          <div class="flex justify-between items-center mb-4">
+            <h4 class="text-lg font-semibold text-green-900">Favori Tarifler</h4>
+          </div>
+
+          <!-- Tarif Kartları -->
+          <div class=" grid grid-cols-3 gap-4">
+            <!-- Tarif 1 -->
+            <div [routerLink]="['/recipe',recipe.id]"
+              *ngFor="let recipe of recipeList | slice:0:(showFavoriteAll ? recipeList.length:3)"
+              class="bg-green-50 rounded-lg overflow-hidden cursor-pointer hover:shadow-md transition-all group">
+              <div class="h-36 bg-green-200 relative overflow-hidden">
+                <img [src]="'http://localhost:8080/' + recipe.imageUrl" alt="Protein Smoothie"
+                  class="w-full h-full object-cover" />
+                <div
+                  class="absolute top-2 right-2 bg-green-600 text-white rounded-full p-1.5 cursor-pointer hover:bg-green-700">
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path
+                      d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                </div>
+              </div>
+              <div class="p-4">
+                <h5 class="font-medium text-green-900 mb-1"> {{recipe.title}} </h5>
+                <div class="flex items-center text-green-600 text-xs mb-2">
+                  <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  {{recipe.prepTime}} dakika
+                  <span class="mx-2">•</span>
+                  <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  {{recipe.calories}} kalori
+                </div>
+                <div class="flex flex-wrap" *ngFor="let ing of recipe.ingredientList">
+                  <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full mr-1 mb-1"> {{ing.name}}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tümünü Gör Butonu -->
+          <div class="text-center mt-4">
+            <button (click)="toggleFavoritedShowAll()"
+              class="text-green-700 hover:text-green-800 text-sm font-medium flex items-center mx-auto">
+              {{showFavoriteAll ? 'Daha Az Göster' : 'Tüm Tarifleri Göster'}}
+              <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-green-100 mb-8">
+          <div class="flex justify-between items-center mb-4">
+            <h4 class="text-lg font-semibold text-green-900">Beğenilen Tarifler</h4>
+          </div>
+
+          <!-- Tarif Kartları -->
+          <div class="mt-4 grid grid-cols-3 gap-4">
+            <!-- Tarif 1 -->
+            <div [routerLink]="['/recipe',recip.id]"
+              *ngFor="let recip of recipeLikeList | slice:0:(showAll ? recipeLikeList.length : 3)"
+              class="bg-green-50 rounded-lg overflow-hidden cursor-pointer hover:shadow-md transition-all group">
+              <div class="h-36 bg-green-200 relative overflow-hidden">
+                <img [src]="'http://localhost:8080/' + recip.imageUrl" alt="Protein Smoothie"
+                  class="w-full h-full object-cover" />
+                <div
+                  class="absolute top-2 right-2 bg-green-600 text-white rounded-full p-1.5 cursor-pointer hover:bg-green-700">
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path
+                      d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                </div>
+              </div>
+              <div class="p-4">
+                <h5 class="font-medium text-green-900 mb-1"> {{recip.title}} </h5>
+                <div class="flex items-center text-green-600 text-xs mb-2">
+                  <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  {{recip.prepTime}} dakika
+                  <span class="mx-2">•</span>
+                  <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  {{recip.calories}} kalori
+                </div>
+                <div class="flex flex-wrap" *ngFor="let ingredient of recip.ingredientList">
+                  <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full mr-1 mb-1">
+                    {{ingredient.name}} </span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Tümünü Gör Butonu -->
+          <div class="text-center mt-4">
+            <button (click)="toggleShowAll()"
+              class="text-green-700 hover:text-green-800 text-sm font-medium flex items-center mx-auto">
+              {{showAll ? 'Daha Az Göster' : 'Tüm Tarifleri Göster'}}
+              <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+
+
+      </div>
+
+
+
+
+
+
+
+  </main>
+</div>

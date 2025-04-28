@@ -1,0 +1,148 @@
+<div class="min-h-screen bg-gradient-to-b from-green-50 to-gray-50">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <!-- Form Header (Başlık aşağı çekildi) -->
+    <div class="mb-8 text-center pt-10">
+      <h1 class="text-4xl font-bold text-green-900 mb-2">Yeni Tarif Oluştur</h1>
+      <p class="text-green-600">Lezzetli tarifini dünyayla paylaş!</p>
+    </div>
+
+    <!-- Form Container -->
+    <form class="space-y-8" [formGroup]="createForm" (ngSubmit)="createRecipe()">
+      <!-- Basic Info Section -->
+      <div class="bg-white p-8 rounded-2xl shadow-sm border border-green-100">
+        <h2 class="text-2xl font-bold text-green-900 mb-6">Temel Bilgiler</h2>
+
+        <div class="grid lg:grid-cols-2 gap-6">
+          <!-- Tarif Adı -->
+          <div>
+            <label class="block text-green-700 font-medium mb-2">Tarif Adı</label>
+            <input type="text"
+              class="w-full px-4 py-3 bg-green-50 border border-green-200 rounded-lg focus:ring-2 focus:ring-green-300 focus:border-green-300 outline-none transition"
+              formControlName="title">
+          </div>
+
+          <!-- Hazırlık Süresi -->
+          <div>
+            <label class="block text-green-700 font-medium mb-2">Hazırlık Süresi</label>
+            <div class="relative">
+              <input type="number" formControlName="prepTime"
+                class="w-full px-4 py-3 bg-green-50 border border-green-200 rounded-lg focus:ring-2 focus:ring-green-300 focus:border-green-300 outline-none transition pr-16">
+              <span class="absolute right-4 top-1/2 -translate-y-1/2 text-green-500">Dakika</span>
+            </div>
+          </div>
+
+          <!-- Kalori -->
+          <div>
+            <label class="block text-green-700 font-medium mb-2">Porsiyon Başı Kalori</label>
+            <div class="relative">
+              <input type="number" formControlName="calories"
+                class="w-full px-4 py-3 bg-green-50 border border-green-200 rounded-lg focus:ring-2 focus:ring-green-300 focus:border-green-300 outline-none transition pr-16">
+              <span class="absolute right-4 top-1/2 -translate-y-1/2 text-green-500">kcal</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Açıklama -->
+        <div class="mt-6">
+          <label class="block text-green-700 font-medium mb-2">Kısa Açıklama</label>
+          <textarea rows="3" formControlName="description"
+            class="w-full px-4 py-3 bg-green-50 border border-green-200 rounded-lg focus:ring-2 focus:ring-green-300 focus:border-green-300 outline-none transition"></textarea>
+        </div>
+
+        <!-- Fotoğraf Yükleme -->
+        <div class="mt-6">
+          <h3 class="text-xl font-bold text-green-900 mb-4">Tarif Fotoğrafı</h3>
+          <div class="flex items-center gap-6">
+            <label
+              class="cursor-pointer w-full py-10 border-2 border-dashed border-green-300 text-center text-green-500 rounded-lg hover:bg-green-50 transition">
+              <input type="file" accept="image/*" (change)="onPhotoSelected($event)" hidden>
+              <div class="flex flex-col items-center justify-center gap-2">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M7 16l-4-4m0 0l4-4m-4 4h18" />
+                </svg>
+                <span>Fotoğraf yükle veya sürükle bırak</span>
+              </div>
+            </label>
+          </div>
+
+          <!-- Önizleme -->
+          <div *ngIf="photoPreview" class="mt-4">
+            <p class="text-green-700 mb-2 font-medium">Önizleme:</p>
+            <img [src]="photoPreview" alt="Fotoğraf önizlemesi"
+              class="rounded-lg shadow-md max-h-64 object-cover w-full">
+          </div>
+        </div>
+      </div>
+
+      <!-- Malzemeler Section -->
+      <div class="bg-white p-8 rounded-2xl shadow-sm border border-green-100">
+        <h2 class="text-2xl font-bold text-green-900 mb-6">Malzemeler</h2>
+
+        <div class="space-y-4" id="ingredients-list" formArrayName="ingredients">
+          <div class="flex gap-4" *ngFor="let ingredient of ingredients.controls; let i = index" [formGroupName]="i">
+            <input type="text" placeholder="Malzeme Adı" formControlName="name"
+              class="flex-1 px-4 py-3 bg-green-50 border border-green-200 rounded-lg focus:ring-2 focus:ring-green-300 outline-none transition">
+            <input type="text" placeholder="Miktar" formControlName="quantity"
+              class="w-32 px-4 py-3 bg-green-50 border border-green-200 rounded-lg focus:ring-2 focus:ring-green-300 outline-none transition">
+            <button type="button" (click)="removeIngredient(i)"
+              class="w-12 h-12 flex items-center justify-center bg-red-100 hover:bg-red-200 text-red-600 rounded-lg transition">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <button type="button" (click)="addIngredient()"
+            class="w-full py-3 flex items-center justify-center gap-2 bg-green-50 hover:bg-green-100 text-green-600 rounded-lg transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+            Malzeme Ekle
+          </button>
+        </div>
+      </div>
+
+      <!-- Yapılış Section -->
+      <div class="bg-white p-8 rounded-2xl shadow-sm border border-green-100">
+        <h2 class="text-2xl font-bold text-green-900 mb-6">Yapılış Adımları</h2>
+
+        <div class="space-y-6" formArrayName="instructions">
+          <div class="flex gap-4" *ngFor="let instructionCtrl of instructionControls; let i = index">
+            <div
+              class="flex-shrink-0 w-10 h-10 bg-green-600 rounded-full flex items-center justify-center text-white font-bold">
+              {{ i + 1 }}
+            </div>
+            <textarea rows="3" [formControl]="instructionCtrl"
+              class="flex-1 px-4 py-3 bg-green-50 border border-green-200 rounded-lg focus:ring-2 focus:ring-green-300 outline-none transition"
+              placeholder="Adım açıklamasını yazın..."></textarea>
+            <button type="button" (click)="removeInstruction(i)"
+              class="w-12 h-12 flex items-center justify-center bg-red-100 hover:bg-red-200 text-red-600 rounded-lg transition">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <button type="button" (click)="addInstruction()"
+            class="w-full py-3 flex items-center justify-center gap-2 bg-green-50 hover:bg-green-100 text-green-600 rounded-lg transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+            Yeni Adım Ekle
+          </button>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <button *ngIf="!isEditMode" type="submit" [disabled]="createForm.invalid"
+        class="w-full py-4 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg transition-transform transform hover:scale-[1.02]">
+        Tarifi Yayınla 🎉
+      </button>
+      <button *ngIf="isEditMode" type="submit" [disabled]="createForm.invalid"
+        class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition-transform transform hover:scale-[1.02]">
+        Tarifi Yeniden Düzenle 🎉
+      </button>
+    </form>
+  </div>
+</div>

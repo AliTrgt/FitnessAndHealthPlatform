@@ -1,0 +1,70 @@
+<div class="mt-5 min-h-screen bg-gradient-to-b from-green-50 to-gray-50 p-8">
+  <div class="max-w-3xl mx-auto">
+    <div class="mb-8">
+      <h2 class="text-3xl font-bold text-green-900 mb-2">Sosyal Bağlantılar</h2>
+      <div class="flex gap-4 border-b border-green-200">
+        <button 
+          (click)="setTab('followers')"
+          class="pb-2 px-1 transition-colors"
+          [ngClass]="{
+            'border-b-2 border-green-600 text-green-700 font-medium': activeTab === 'followers',
+            'text-green-600 hover:text-green-700': activeTab !== 'followers'
+          }"
+        >
+          Takipçiler ({{followUsers.length}})
+        </button>
+        <button 
+          (click)="setTab('following')"
+          class="pb-2 px-1 transition-colors"
+          [ngClass]="{
+            'border-b-2 border-green-600 text-green-700 font-medium': activeTab === 'following',
+            'text-green-600 hover:text-green-700': activeTab !== 'following'
+          }"
+        >
+          Takip Edilenler ({{followingUsers.length}})
+        </button>
+      </div>
+    </div>
+
+    <div class="space-y-3">
+
+      <div *ngIf="users.length > 0 && activeTab == 'followers' " class="bg-white p-4 rounded-xl shadow-sm border border-green-100 hover:shadow-md transition-shadow">
+        <div *ngFor="let user of users" class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-full bg-green-200 overflow-hidden">
+              <img [src]="'http://localhost:8080/' + user.profilePhoto" class="w-full h-full object-cover">
+            </div>
+            <div>
+              <h3 class="font-semibold text-green-900">{{user.username}}</h3>
+              <p class="text-sm text-green-600">{{user.followers.length}} Takipçi</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="users.length > 0 && activeTab == 'following'" class="bg-white p-4 rounded-xl shadow-sm border border-green-100 hover:shadow-md transition-shadow">
+        <div *ngFor="let user of fusers" class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-full bg-green-200 overflow-hidden">
+              <img [src]="'http://localhost:8080/' + user.profilePhoto" class="w-full h-full object-cover">
+            </div>
+            <div>
+              <h3 class="font-semibold text-green-900">{{user.username}}</h3>
+              <p class="text-sm text-green-600">{{user.followers.length}} Takipçi</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="users.length === 0" class="bg-white p-8 rounded-xl text-center border-2 border-dashed border-green-200">
+        <div class="max-w-xs mx-auto">
+          <svg class="w-16 h-16 mx-auto text-green-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+          </svg>
+          <h4 class="text-lg font-medium text-green-900 mb-2">Henüz bağlantın yok</h4>
+          <p class="text-green-600">Yeni insanlar keşfet ve onları takip etmeye başla!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
