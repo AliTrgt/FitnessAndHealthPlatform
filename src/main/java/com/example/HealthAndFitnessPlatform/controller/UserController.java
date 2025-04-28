@@ -12,6 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -103,5 +104,8 @@ public class UserController {
 
                     return ResponseEntity.ok("Profile Photo updated :  " + filePath);
     }
+
+
+
 
 }
