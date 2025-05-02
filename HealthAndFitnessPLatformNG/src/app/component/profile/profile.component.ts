@@ -47,6 +47,7 @@ export class ProfileComponent implements OnInit {
     if(stringToken){
           this.user = JSON.parse(stringToken);
     } 
+      this.getLoad();
       this.getUserWorkoutPlanByUserId();
       this.getFavoriteRecipes();
       this.getLikedRecipes();
@@ -54,6 +55,12 @@ export class ProfileComponent implements OnInit {
 
   logOut(){
        this.authService.logOut();
+  }
+
+  getLoad(){
+    this.userService.findById(this.user.id).subscribe(response => {
+        this.user = response;
+    })
   }
 
   getFormattedTime() {
@@ -118,8 +125,7 @@ export class ProfileComponent implements OnInit {
       })
 
   }
-
-
+  
   getLikedRecipes(){
       this.likeService.getLikesByUserId(this.user.id).subscribe(response => {
         console.log(this.likeList);  

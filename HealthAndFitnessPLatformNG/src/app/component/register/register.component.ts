@@ -53,7 +53,9 @@ export class RegisterComponent {
               });
                 this.router.navigate(['/login']);
         }
-
+            else {
+              this.router.navigate(['/login']);
+            }
       })
   }
    

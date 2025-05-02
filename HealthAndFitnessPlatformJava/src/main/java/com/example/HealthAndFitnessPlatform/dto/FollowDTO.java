@@ -11,6 +11,6 @@ public class FollowDTO {
     private int id;
     private int followerId;
     private int followingId;
-    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-mm-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd HH:mm:ss")
     private  LocalDateTime createdAt;
 }

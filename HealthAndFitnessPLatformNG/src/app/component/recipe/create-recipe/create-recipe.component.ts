@@ -25,7 +25,7 @@ export class CreateRecipeComponent implements OnInit {
   recipeId!: number;
   isEditMode: boolean = false;
   selectedPhoto!: File;
-  constructor(private recipeService: RecipeService, private fb: FormBuilder, private route: Router, private imageUploadService:ImageUploadService, private routE: ActivatedRoute,private ingredientService:IngredientService,private cdRef:ChangeDetectorRef) { }
+  constructor(private recipeService: RecipeService, private fb: FormBuilder, private route: Router, private imageUploadService:ImageUploadService, private routE: ActivatedRoute,private ingredientService:IngredientService) { }
   ngOnInit(): void {
     const userToken = localStorage.getItem('currentUser');
     userToken ? this.user = JSON.parse(userToken) : null
@@ -37,6 +37,7 @@ export class CreateRecipeComponent implements OnInit {
       calories: ['', Validators.required],
       description: [''],
       userId: [''],
+      imageUrl:[''],
       ingredients: this.fb.array([]),
       instructions: this.fb.array([])
     })
@@ -68,6 +69,7 @@ export class CreateRecipeComponent implements OnInit {
       ...this.createForm.value,
       userId: this.user.id,
       instructions: linkedInstruction,
+      imageUrl:this.recipe.imageUrl,
       ingredientList: this.ingredients.value.map((ing: any) => ({
         id : ing.id,
         name: ing.name,
@@ -82,10 +84,10 @@ export class CreateRecipeComponent implements OnInit {
                 this.route.navigate(["/myrecipes"]);
             })
         }
-        console.log("updated response : " + response);
+        this.route.navigate(["/myrecipes"]);
       })
     }
-    else {
+    if(!this.isEditMode) {
       this.recipeService.createRecipe(formData).subscribe(response => {
         if(this.selectedPhoto){
             this.imageUploadService.uploadRecipeImagePhoto(response.id,this.selectedPhoto).subscribe(() => {
@@ -173,14 +175,11 @@ export class CreateRecipeComponent implements OnInit {
   }
 
 
-  updateIngredient(index: number, ingredient: Ingredient): void {
-    const ingredientId = this.ingredients.at(index).value.id;
-    this.ingredientService.updateIngredient(ingredientId, ingredient).subscribe(updatedIngredient => {
-      this.ingredients.at(index).patchValue(updatedIngredient);
-      this.cdRef.detectChanges();
-
-    });
-  }
+ updateIngredient(ingredientId:number,ingredient:Ingredient){
+    return this.ingredientService.updateIngredient(ingredientId,ingredient).subscribe(response => {
+          console.log(response);
+    })
+ }
 
 }
 

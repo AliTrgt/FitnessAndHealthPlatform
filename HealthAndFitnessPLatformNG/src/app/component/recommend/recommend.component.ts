@@ -1,21 +1,37 @@
-import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { RecipeComponent } from '../recipe/recipe.component';
+import { RecipeService } from '../../service/recipe/recipe.service';
+import { User } from '../../model/user';
+import { response } from 'express';
+import { Recipe } from '../../model/recipe';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-recommend',
   standalone: true,
-  imports: [],
+  imports: [CommonModule,FormsModule,RouterLink],
   templateUrl: './recommend.component.html',
   styleUrl: './recommend.component.css'
 })
-export class RecommendComponent {
-  showRecommendations = false;
-  isLoading = false;
+export class RecommendComponent implements OnInit {
 
-  getRecommendations() {
-    this.isLoading = true;
-    setTimeout(() => {
-      this.isLoading = false;
-      this.showRecommendations = true;
-    }, 1500);
+  user!:User;
+  recipeList:Recipe[] = [];
+  constructor(private recipeService:RecipeService){}
+  ngOnInit() {
+        const stringToken = localStorage.getItem('currentUser');
+        if(stringToken){
+            this.user = JSON.parse(stringToken);
+        }
   }
+
+  getReccomendation(){
+      this.recipeService.getRecipeByUserId(this.user.id).subscribe(response => {
+            this.recipeList = response;
+      } )
+  }
+
+
 }

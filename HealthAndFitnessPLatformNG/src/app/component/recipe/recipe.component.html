@@ -26,7 +26,7 @@
 
       <div class="relative rounded-2xl overflow-hidden shadow-lg w-full max-w-3xl mx-auto">
         <img 
-          src="{{recipe.imageUrl}}" 
+          [src]="'http://localhost:8080/' + recipe.imageUrl"
           alt="Tarif görseli" 
           class="w-full h-auto object-cover rounded-2xl"
         />

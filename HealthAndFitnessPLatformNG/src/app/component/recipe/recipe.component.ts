@@ -64,7 +64,6 @@ export class RecipeComponent implements OnInit {
   getRecipeById() {
     this.recipeService.findById(this.recipeId).subscribe(response => {
       this.recipe = response;
-      this.recipe.imageUrl = 'http://localhost:8080/' + this.recipe.imageUrl;
       console.log(this.recipe.imageUrl);
       // Tüm yorumlar için kullanıcı isimlerini tek seferde çek
       const userObservables = this.recipe.commentList.map(comment => 

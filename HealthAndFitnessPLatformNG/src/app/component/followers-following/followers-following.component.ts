@@ -27,16 +27,20 @@ export class FollowersFollowingComponent implements OnInit {
   
   
   ngOnInit() {
-    const stringToken = localStorage.getItem('currentUser');
-    if (stringToken) {
-        this.user = JSON.parse(stringToken);
-        this.followUsers = this.user.followers;
-        this.followingUsers = this.user.following;
-        
-        this.getFollowerObject();
-        this.getFollowingObject();
+      const stringToken = localStorage.getItem('currentUser');
+      if (stringToken) {
+        const parsedUser = JSON.parse(stringToken);
+        this.userService.findById(parsedUser.id).subscribe(userResponse => {
+          this.user = userResponse;
+          this.followUsers = this.user.followers;
+          this.followingUsers = this.user.following;
+    
+          this.getFollowerObject();
+          this.getFollowingObject();
+        });
+      }
     }
-}
+    
 
   getFollowerObject(){
         this.followUsers.map(follow => {
