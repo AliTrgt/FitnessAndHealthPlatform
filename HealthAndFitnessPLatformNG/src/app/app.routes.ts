@@ -1,19 +1,19 @@
 import { Routes } from '@angular/router';
-import { HomePageComponent } from './component/home-page/home-page.component';
-import { RecommendComponent } from './component/recommend/recommend.component';
-import { FavoritesComponent } from './component/favorites/favorites.component';
-import { LoginComponent } from './component/login/login.component';
-import { RegisterComponent } from './component/register/register.component';
-import { ProfileComponent } from './component/profile/profile.component';
-import { RecipeComponent } from './component/recipe/recipe.component';
+import { HomePageComponent } from './components/home-page/home-page.component';
+import { RecommendComponent } from './components/recommend/recommend.component';
+import { FavoritesComponent } from './components/favorites/favorites.component';
+import { LoginComponent } from './components/login/login.component';
+import { RegisterComponent } from './components/register/register.component';
+import { ProfileComponent } from './components/profile/profile.component';
+import { RecipeComponent } from './components/recipe/recipe.component';
 import { AuthGuardService } from './service/security/auth-guard.service';
-import { MyRecipesComponent } from './component/my-recipes/my-recipes.component';
-import { TrainingComponent } from './component/training/training.component';
-import { CreateRecipeComponent } from './component/recipe/create-recipe/create-recipe.component';
+import { MyRecipesComponent } from './components/my-recipes/my-recipes.component';
+import { TrainingComponent } from './components/training/training.component';
+import { CreateRecipeComponent } from './components/recipe/create-recipe/create-recipe.component';
 import { createTracing } from 'trace_events';
-import { CreateTrainingComponent } from './component/training/create-training/create-training.component';
-import { UserProfileComponent } from './component/user-profile/user-profile.component';
-import { FollowersFollowingComponent } from './component/followers-following/followers-following.component';
+import { CreateTrainingComponent } from './components/training/create-training/create-training.component';
+import { UserProfileComponent } from './components/user-profile/user-profile.component';
+import { FollowersFollowingComponent } from './components/followers-following/followers-following.component';
 
 export const routes: Routes = [
      {path:"",component:HomePageComponent,pathMatch:"full"},

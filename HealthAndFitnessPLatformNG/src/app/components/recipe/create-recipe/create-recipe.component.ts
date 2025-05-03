@@ -1,9 +1,11 @@
+
+
 import { ChangeDetectorRef, Component, OnInit, resolveForwardRef } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RecipeService } from '../../../service/recipe/recipe.service';
 import { response } from 'express';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { User } from '../../../model/user';
 import { IngredientService } from '../../../service/ingredient/ingredient.service';
 import { Ingredient } from '../../../model/ingredient';
@@ -13,7 +15,7 @@ import { ImageUploadService } from '../../../service/imageUpload/image-upload.se
 @Component({
   selector: 'app-create-recipe',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule,RouterLink],
   templateUrl: './create-recipe.component.html',
   styleUrl: './create-recipe.component.css'
 })
@@ -69,7 +71,7 @@ export class CreateRecipeComponent implements OnInit {
       ...this.createForm.value,
       userId: this.user.id,
       instructions: linkedInstruction,
-      imageUrl:this.recipe.imageUrl,
+      imageUrl: this.isEditMode && this.recipe ? this.recipe.imageUrl : '',
       ingredientList: this.ingredients.value.map((ing: any) => ({
         id : ing.id,
         name: ing.name,
@@ -182,5 +184,6 @@ export class CreateRecipeComponent implements OnInit {
  }
 
 }
+
 
 

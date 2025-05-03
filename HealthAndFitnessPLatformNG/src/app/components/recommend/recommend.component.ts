@@ -28,10 +28,14 @@ export class RecommendComponent implements OnInit {
   }
 
   getReccomendation(){
-      this.recipeService.getRecipeByUserId(this.user.id).subscribe(response => {
+      this.recipeService.getRecommendation(this.user.id).subscribe(response => {
             this.recipeList = response;
+            console.log(response);
       } )
   }
+
+
+  
 
 
 }

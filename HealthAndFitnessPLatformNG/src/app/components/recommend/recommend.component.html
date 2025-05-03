@@ -1,0 +1,64 @@
+<main class="min-h-screen bg-gradient-to-b from-green-50 to-gray-50 pt-20 pb-16">
+  <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <!-- Öneri Sistemi Başlık -->
+    <div class="text-center mb-10 pt-4">
+      <h2 class="text-3xl font-bold bg-gradient-to-r from-green-700 to-green-500 bg-clip-text text-transparent">
+        Sizin İçin Öneriler
+      </h2>
+      <p class="mt-2 text-green-600">Sağlıklı yaşam alışkanlıklarınıza göre özel seçilmiş tarifler</p>
+    </div>
+
+    <!-- 👉 grid container -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <!-- 👉 her kart için ngFor burada -->
+      <div *ngFor="let recipe of recipeList" class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col">
+        <div class="h-48 bg-gray-200 animate-pulse">
+          <img [src]="'http://localhost:8080/' + recipe.imageUrl" class="object-cover w-full h-full">
+        </div>
+        <div class="flex-1 flex flex-col justify-between p-6">
+          <div>
+            <h3 class="text-xl font-bold text-gray-800 mb-2">{{ recipe.title }}</h3>
+            <div class="flex items-center text-sm text-gray-600 mb-4">
+              <span class="mr-4">
+                ⏱ <span class="font-medium">{{ recipe.prepTime }} Dakika</span>
+              </span>
+              <span>
+                🔥 <span class="font-medium">{{ recipe.calories }} Kalori</span>
+              </span>
+            </div>
+            <p class="text-gray-600 line-clamp-3">{{ recipe.description }}</p>
+          </div>
+          <div class="mt-4">
+            <button [routerLink]="['/recipe', recipe.id]" class="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg transition-colors">
+              Yemek Sayfasına Git
+            </button>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+
+    <!-- Öneri Butonu -->
+   <div class="flex justify-center mt-12">
+  <button
+    class="recommendation-button flex items-center bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition-all mr-4"
+    (click)="getReccomendation()">
+    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+    </svg>
+    Yeni Önerileri Getir
+  </button>
+
+  <button
+    [routerLink]="['/homepage']"
+    class="flex items-center bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-5 rounded-lg shadow transition-all">
+    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7m-9 2v8m0-8h8"></path>
+    </svg>
+    Ana Sayfaya Dön
+  </button>
+</div>
+
+  </div>
+</main>

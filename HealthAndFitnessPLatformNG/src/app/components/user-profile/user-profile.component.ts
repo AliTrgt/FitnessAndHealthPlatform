@@ -32,6 +32,7 @@ export class UserProfileComponent implements OnInit {
     const sessionUser = localStorage.getItem('currentUser');
     if(sessionUser){
           this.sessionUser = JSON.parse(sessionUser);
+          this.loadUserLikesFromDB(this.sessionUser.id);
     }
     this.loadLikesFromLocalStorages();
         this.router.paramMap.subscribe(req => {
@@ -43,12 +44,12 @@ export class UserProfileComponent implements OnInit {
   }
 
   toggleLikeRecipe(recipeId: number) {
-    const like: Like = { userId: this.userId , recipeId: recipeId };
+    const like: Like = { userId: this.sessionUser.id , recipeId: recipeId };
     this.likeService.toggleLike(like).subscribe(response => {
       const recipe = this.recipes.find(r => r.id === recipeId);
       if (!recipe) return;
   
-      const existingLikeIndex = recipe.likeList.findIndex(l => l.userId === this.userId);
+      const existingLikeIndex = recipe.likeList.findIndex(l => l.userId === this.sessionUser.id);
   
       if (existingLikeIndex !== -1) {
         recipe.likeList.splice(existingLikeIndex, 1);
@@ -65,7 +66,6 @@ export class UserProfileComponent implements OnInit {
   }
   
   toggleFollowUser(){
-
     if(this.isFollowing){
       const follow : Follow = {followerId : this.userId , followingId :this.sessionUser.id}
       this.followService.unFollow(follow).subscribe(response => {
@@ -124,6 +124,15 @@ export class UserProfileComponent implements OnInit {
   likedRecipeHas(recipeId : number) : boolean {
       return this.likedRecipes.has(recipeId);
   }
+
+  loadUserLikesFromDB(userId: number) {
+    this.likeService.getLikesByUserId(userId).subscribe(likes => {
+      const likedIds = likes.map(like => like.recipeId);
+      this.likedRecipes = new Set(likedIds);
+      this.savesLikesToLocalStorages(); // Eğer local'de tutmak istiyorsan
+    });
+  }
+
 
 
 }

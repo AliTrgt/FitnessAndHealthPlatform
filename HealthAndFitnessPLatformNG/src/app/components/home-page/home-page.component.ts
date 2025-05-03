@@ -41,13 +41,10 @@ export class HomePageComponent implements OnInit {
     const userToken = localStorage.getItem('currentUser');
     if (userToken) {
       this.currentUser = JSON.parse(userToken);
+      this.loadUserLikesFromDB(this.currentUser.id);
     }
     this.loadLikesFromLocalStorage(); 
     this.getAllRecipes();
-
-
-   this.getTrendRecipe(); 
-    
   }
 
   loadLikesFromLocalStorage() {
@@ -57,9 +54,11 @@ export class HomePageComponent implements OnInit {
       this.likedRecipes = new Set(likedIds);
     }
   }
+
   isLoggedIn(): boolean {
     return this.authUserService.isLoggedIn();
   }
+
   getAllRecipes() {
     this.recipeService.getAllRecipes().subscribe(recipe => {
       this.recipes.set(recipe);
@@ -73,6 +72,7 @@ export class HomePageComponent implements OnInit {
         // Kullanıcıları userMap'e ekle
         users.forEach(user => {
           this.userMap.set(user.id, user);
+          
         });
         
         // Artık her recipe'yi userMap ile eşleştirebilirsiniz
@@ -80,6 +80,7 @@ export class HomePageComponent implements OnInit {
         // Ayrıca fotoğraf url'leri de burada kullanabilirsiniz
       });
     });
+    
   }
   
   toggleLikeRecipe(recipeId: number) {
@@ -104,57 +105,21 @@ export class HomePageComponent implements OnInit {
     });
   }
 
-
    likedRecipeHas(recipeId:number) : boolean {
      return this.likedRecipes.has(recipeId);  
     }
 
-  getTrendRecipe() {
-    const storedData = localStorage.getItem('trendRecipe');
-    if (storedData) {
-      this.trendRecipes = JSON.parse(storedData);
-      console.log('Trend Tarifler (localStorage):', this.trendRecipes);
-    } else {
-      this.recipeService.getAllRecipes().subscribe(recipes => {
-        this.recipeQuantity = recipes.length;
-
-        if (this.recipeQuantity === 0) {
-          console.warn('Tarif listesi boş.');
-          return;
-        }
-
-        let number1 = this.getRandomValue(1, this.recipeQuantity);
-        let number2 = this.getRandomValue(1, this.recipeQuantity);
-        while (number1 === number2 && this.recipeQuantity > 1) {
-          number2 = this.getRandomValue(1, this.recipeQuantity);
-        }
-        console.log('Seçilen IDler:', number1, number2);
-
-        // İki API çağrısının da tamamlanmasını bekliyoruz
-        forkJoin({
-          recipe1: this.recipeService.findById(number1),
-          recipe2: this.recipeService.findById(number2)
-        }).subscribe(response => {
-          // Her iki yanıt geldikten sonra diziye ekliyoruz
-          this.trendRecipes.push(response.recipe1, response.recipe2);
-          // LocalStorage'ye doğru veriyi kaydediyoruz
-          localStorage.setItem('trendRecipe', JSON.stringify(this.trendRecipes));
-          console.log('Trend Tarifler (forkJoin sonrası):', this.trendRecipes);
-        }, error => {
-          console.error('Tarifler alınırken hata oluştu:', error);
-        });
-      }, error => {
-        console.error('Tüm tarifler alınırken hata oluştu:', error);
-      });
-    }
-  }
-
-  getRandomValue(min: number, max: number) {
-    return Math.floor(Math.random() * (max - min + 1) + min);
-  }
-
   saveLikesToLocalStorage() {
     localStorage.setItem('likedRecipes', JSON.stringify([...this.likedRecipes]));
   }
+
+  loadUserLikesFromDB(userId: number) {
+    this.likeService.getLikesByUserId(userId).subscribe(likes => {
+      const likedIds = likes.map(like => like.recipeId);
+      this.likedRecipes = new Set(likedIds);
+      this.saveLikesToLocalStorage(); // Eğer local'de tutmak istiyorsan
+    });
+  }
+
 
 }

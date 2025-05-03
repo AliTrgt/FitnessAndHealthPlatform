@@ -10,7 +10,7 @@ import { workoutPlan } from '../../../model/workoutPlan';
 @Component({
   selector: 'app-create-training',
   standalone: true,
-  imports: [ReactiveFormsModule,CommonModule],
+  imports: [ReactiveFormsModule,CommonModule,RouterLink],
   templateUrl: './create-training.component.html',
   styleUrl: './create-training.component.css'
 })
