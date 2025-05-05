@@ -7,16 +7,22 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 app = Flask(__name__)
 
+# API URL'leri
 RECIPES_URL = "http://localhost:8080/v1/recipe"
 LIKES_URL = "http://localhost:8080/v1/like"
 FAVORITES_URL = "http://localhost:8080/v1/favorite"
 
+# BERT Tokenizer ve Model
 tokenizer = AutoTokenizer.from_pretrained("dbmdz/bert-base-turkish-cased")
 model = AutoModel.from_pretrained("dbmdz/bert-base-turkish-cased")
 
 def get_combined_text(recipe):
-    """Sadece title ve description birleştirilir"""
-    return f"{recipe.get('title', '')} {recipe.get('description', '')}".strip()
+    """title, description ve ingredient (quantity + name) alanlarını birleştirir"""
+    ingredients = " ".join([
+        f"{ing.get('quantity', '')} {ing.get('name', '')}".strip()
+        for ing in recipe.get('ingredientList', [])
+    ])
+    return f"{recipe.get('title', '')} {recipe.get('description', '')} {ingredients}".strip()
 
 def get_embedding(text):
     """Metni BERT embedding'ine dönüştürür"""
@@ -61,7 +67,7 @@ def get_recommendations(user_id):
     # Ağırlıklandırma
     interactions = {}
     for rid in set(liked_ids + favorited_ids):
-        interactions[rid] = 1.8 if (rid in liked_ids and rid in favorited_ids) else 1.3 if rid in favorited_ids else 1.0
+        interactions[rid] = 2.0 if (rid in liked_ids and rid in favorited_ids) else 1.5 if rid in favorited_ids else 1.2
 
     # Tarif sözlüğü
     recipes = {r['id']: r for r in all_recipes}

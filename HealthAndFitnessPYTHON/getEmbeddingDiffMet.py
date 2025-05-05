@@ -7,25 +7,40 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 app = Flask(__name__)
 
+# API URL'leri
 RECIPES_URL = "http://localhost:8080/v1/recipe"
 LIKES_URL = "http://localhost:8080/v1/like"
 FAVORITES_URL = "http://localhost:8080/v1/favorite"
 
+# BERT Tokenizer ve Model
 tokenizer = AutoTokenizer.from_pretrained("dbmdz/bert-base-turkish-cased")
 model = AutoModel.from_pretrained("dbmdz/bert-base-turkish-cased")
 
 def get_combined_text(recipe):
-    """Title, description ve instructions'ı birleştirir"""
-    return f"{recipe.get('title', '')} {recipe.get('description', '')} {recipe.get('instructions', '')}".strip()
+    """title, description ve ingredient (quantity + name) alanlarını birleştirir"""
+    ingredients = " ".join([
+        f"{ing.get('quantity', '')} {ing.get('name', '')}".strip()
+        for ing in recipe.get('ingredientList', [])
+    ])
+    return f"{recipe.get('title', '')} {recipe.get('description', '')} {ingredients}".strip()
 
 def get_embedding(text):
-    """Metni BERT embedding'ine dönüştürür"""
+    """Metni BERT embedding'ine dönüştürür (mean pooling ile)"""
     if not text:
-        return np.zeros(768)  # Boş metin için fallback
+        return np.zeros(768)
+    
     inputs = tokenizer(text, return_tensors="pt", truncation=True, padding=True, max_length=512)
     with torch.no_grad():
         outputs = model(**inputs)
-    return outputs.last_hidden_state[:, 0, :].squeeze().numpy()
+
+    # Mean pooling
+    last_hidden = outputs.last_hidden_state
+    attention_mask = inputs['attention_mask']
+    mask_expanded = attention_mask.unsqueeze(-1).expand(last_hidden.size()).float()
+    sum_embeddings = torch.sum(last_hidden * mask_expanded, dim=1)
+    sum_mask = torch.clamp(mask_expanded.sum(dim=1), min=1e-9)
+    return (sum_embeddings / sum_mask).squeeze().numpy()
+
 
 def fetch_data(url):
     """API'den veri çeker"""
@@ -61,7 +76,7 @@ def get_recommendations(user_id):
     # Ağırlıklandırma
     interactions = {}
     for rid in set(liked_ids + favorited_ids):
-        interactions[rid] = 1.8 if (rid in liked_ids and rid in favorited_ids) else 1.3 if rid in favorited_ids else 1.1
+        interactions[rid] = 2.0 if (rid in liked_ids and rid in favorited_ids) else 1.5 if rid in favorited_ids else 1.2
 
     # Tarif sözlüğü
     recipes = {r['id']: r for r in all_recipes}
@@ -101,7 +116,6 @@ def get_recommendations(user_id):
                 "id": rid,
                 "title": recipe.get('title'),
                 "description": recipe.get('description'),
-                "instructions": recipe.get('instructions'),
                 "prepTime": recipe.get('prepTime'),
                 "calories": recipe.get('calories'),
                 "createdAt": recipe.get('createdAt'),
@@ -110,7 +124,8 @@ def get_recommendations(user_id):
                 "ingredientList": recipe.get('ingredientList', []),
                 "likeList": recipe.get('likeList', []),
                 "commentList": recipe.get('commentList', []),
-                "score": float(similarities[idx])
+                "score": float(similarities[idx]),
+                "imageUrl": recipe.get('imageUrl')
             })
 
     # Sırala ve dön
@@ -119,3 +134,4 @@ def get_recommendations(user_id):
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000, debug=True)
+

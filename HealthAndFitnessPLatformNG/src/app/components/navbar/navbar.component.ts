@@ -1,5 +1,5 @@
 import { CommonModule, NgLocaleLocalization } from '@angular/common';
-import { Component, effect, inject, Signal } from '@angular/core';
+import { Component, effect, inject, OnInit, Signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthUserService } from '../../service/security/auth-user.service';
 import { User } from '../../model/user';
@@ -11,7 +11,7 @@ import { User } from '../../model/user';
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })
-export class NavbarComponent {
+export class NavbarComponent implements OnInit {
   user!:User;
   public authUserService = inject(AuthUserService);
   currentUser : Signal<User | null> = this.authUserService.currentUser;
@@ -23,6 +23,11 @@ export class NavbarComponent {
         }
     }   
   }
+  ngOnInit(){
+  }
+ 
+
+
   isLoggedIn() : boolean{
       return this.authUserService.isLoggedIn();
   }

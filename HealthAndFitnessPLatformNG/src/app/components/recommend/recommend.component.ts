@@ -7,6 +7,7 @@ import { User } from '../../model/user';
 import { response } from 'express';
 import { Recipe } from '../../model/recipe';
 import { RouterLink } from '@angular/router';
+import { error } from 'console';
 
 @Component({
   selector: 'app-recommend',
@@ -19,6 +20,7 @@ export class RecommendComponent implements OnInit {
 
   user!:User;
   recipeList:Recipe[] = [];
+  errorMessage:string = '';
   constructor(private recipeService:RecipeService){}
   ngOnInit() {
         const stringToken = localStorage.getItem('currentUser');
@@ -31,7 +33,14 @@ export class RecommendComponent implements OnInit {
       this.recipeService.getRecommendation(this.user.id).subscribe(response => {
             this.recipeList = response;
             console.log(response);
-      } )
+            this.errorMessage = '';
+      },
+    (error)  => {
+          console.log('Api error');
+          this.errorMessage = 'En az 3-5 post beğenip favorilemelisin.';
+    }
+  
+  )
   }
 
 

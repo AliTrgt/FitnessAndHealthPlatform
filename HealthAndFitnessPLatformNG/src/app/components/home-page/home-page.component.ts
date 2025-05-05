@@ -29,6 +29,7 @@ import { forkJoin, Observable, of } from 'rxjs';
 })
 export class HomePageComponent implements OnInit {
   public recipeService = inject(RecipeService);
+  public authUserService = inject(AuthUserService);
   recipes = signal<Recipe[] | null>(null);
   trendRecipes: Recipe[] = [];
   recipeQuantity!: number;
@@ -36,7 +37,8 @@ export class HomePageComponent implements OnInit {
   currentUser!: User;
   likedRecipes: Set<number> = new Set();
   userMap =  new Map<number,User>;
-  constructor(private authUserService: AuthUserService, private userService: UserService, private likeService: LikeService) { }
+  constructor(private userService: UserService, private likeService: LikeService) { }
+  
   ngOnInit() {
     const userToken = localStorage.getItem('currentUser');
     if (userToken) {
@@ -84,26 +86,37 @@ export class HomePageComponent implements OnInit {
   }
   
   toggleLikeRecipe(recipeId: number) {
-    const like: Like = { userId: this.currentUser.id, recipeId: recipeId }
-    this.likeService.toggleLike(like).subscribe(response => {
-        const recipe =   this.recipes()!.find(r => r.id === recipeId);
-          if(!recipe) return;
-
-          const existingLikeIndex = recipe.likeList.findIndex(l => l.userId ===this.currentUser.id);
-
-          if(existingLikeIndex !== -1 ){
-              recipe.likeList.splice(existingLikeIndex,1);
-              recipe.likeCount--;
-              this.likedRecipes.delete(recipeId);
-          } else {
-                recipe.likeList.push(like);
-                recipe.likeCount++;
-                this.likedRecipes.add(recipeId);
-          }
-
-          this.saveLikesToLocalStorage();
+    if (!this.currentUser || !this.currentUser.id) {
+      console.warn('Kullanıcı bilgisi henüz yüklenmedi. Like atılamaz.');
+      return;
+    }
+  
+    const like: Like = { userId: this.currentUser.id, recipeId: recipeId };
+    
+    this.likeService.toggleLike(like).subscribe({
+      next: response => {
+        const recipe = this.recipes()!.find(r => r.id === recipeId);
+        if (!recipe) return;
+  
+        const existingLikeIndex = recipe.likeList.findIndex(l => l.userId === this.currentUser.id);
+        if (existingLikeIndex !== -1) {
+          recipe.likeList.splice(existingLikeIndex, 1);
+          recipe.likeCount--;
+          this.likedRecipes.delete(recipeId);
+        } else {
+          recipe.likeList.push(like);
+          recipe.likeCount++;
+          this.likedRecipes.add(recipeId);
+        }
+  
+        this.saveLikesToLocalStorage();
+      },
+      error: err => {
+        console.error('Like API hatası:', err);
+      }
     });
   }
+  
 
    likedRecipeHas(recipeId:number) : boolean {
      return this.likedRecipes.has(recipeId);  

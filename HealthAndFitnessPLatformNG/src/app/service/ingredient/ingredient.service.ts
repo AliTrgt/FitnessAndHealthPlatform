@@ -8,7 +8,7 @@ import { Ingredient } from '../../model/ingredient';
 })
 export class IngredientService {
 
-  private baseURL = "http://localhost:8080/v1/ingredient "
+  private baseURL = "http://localhost:8080/v1/ingredient"
   constructor(private http:HttpClient) { }
 
 

@@ -8,7 +8,6 @@ public enum WorkoutType {
     CYCLING(8.5),
     SWIMMING(8.5),
     YOGA(3.0),
-    HIIT(15.5),
     PILATES(5.0),
     WALKING(8.7),
     BOXING(12.0),

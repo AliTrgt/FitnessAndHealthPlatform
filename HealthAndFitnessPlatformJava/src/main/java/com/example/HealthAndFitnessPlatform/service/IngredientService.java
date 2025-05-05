@@ -3,7 +3,9 @@ package com.example.HealthAndFitnessPlatform.service;
 import com.example.HealthAndFitnessPlatform.dto.IngredientDTO;
 import com.example.HealthAndFitnessPlatform.exception.IngredientNotFoundException;
 import com.example.HealthAndFitnessPlatform.model.Ingredient;
+import com.example.HealthAndFitnessPlatform.model.Recipe;
 import com.example.HealthAndFitnessPlatform.repository.IngredientRepository;
+import com.example.HealthAndFitnessPlatform.repository.RecipeRepository;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -17,10 +19,12 @@ public class IngredientService {
 
     private final ModelMapper modelMapper;
     private final IngredientRepository ingredientRepository;
+    private final RecipeRepository recipeRepository;
 
-    public IngredientService(ModelMapper modelMapper, IngredientRepository ingredientRepository) {
+    public IngredientService(ModelMapper modelMapper, IngredientRepository ingredientRepository, RecipeRepository recipeRepository) {
         this.modelMapper = modelMapper;
         this.ingredientRepository = ingredientRepository;
+        this.recipeRepository = recipeRepository;
     }
 
     public List<IngredientDTO> getAllIngredient(){
@@ -37,16 +41,16 @@ public class IngredientService {
     }
 
     public IngredientDTO createIngredient(IngredientDTO ingredient){
-           Ingredient firstIngredient = modelMapper.map(ingredient,Ingredient.class);
-           Ingredient lastIngredient = ingredientRepository.save(firstIngredient);
-           return modelMapper.map(lastIngredient,IngredientDTO.class);
+        Ingredient firstIngredient = modelMapper.map(ingredient,Ingredient.class);
+        Ingredient lastIngredient = ingredientRepository.save(firstIngredient);
+        return modelMapper.map(lastIngredient,IngredientDTO.class);
     }
 
     @Transactional
     public IngredientDTO updateIngredient(int ingredientId,IngredientDTO ingredient){
         Ingredient firstIngredient = ingredientRepository.findById(ingredientId).orElseThrow(() -> new IngredientNotFoundException("Ingredient not found : "+ingredientId));
         firstIngredient.setName(ingredient.getName());
-
+        firstIngredient.setQuantity(ingredient.getQuantity());
         Ingredient lastIngredient = ingredientRepository.save(firstIngredient);
         return modelMapper.map(lastIngredient,IngredientDTO.class);
     }
