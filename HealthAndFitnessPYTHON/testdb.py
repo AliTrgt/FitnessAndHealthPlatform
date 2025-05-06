@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify
 import requests
 from transformers import AutoTokenizer, AutoModel
 import torch
@@ -6,30 +6,19 @@ import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 from functools import lru_cache
 from collections import defaultdict
-from sklearn.metrics import ndcg_score
-import random
+from sklearn.model_selection import train_test_split
 
 app = Flask(__name__)
 
-# --- GLOBAL TRAIN/TEST DATA ---
-train_data = defaultdict(set)
-test_data  = defaultdict(set)
-
-# API URL'leri
-RECIPES_URL   = "http://localhost:8080/v1/recipe"
-LIKES_URL     = "http://localhost:8080/v1/like"
+RECIPES_URL = "http://localhost:8080/v1/recipe"
+LIKES_URL = "http://localhost:8080/v1/like"
 FAVORITES_URL = "http://localhost:8080/v1/favorite"
 
-print("BERT modeli yükleniyor...")
 tokenizer = AutoTokenizer.from_pretrained("dbmdz/bert-base-turkish-cased")
-model     = AutoModel.from_pretrained("dbmdz/bert-base-turkish-cased")
-print("Model yüklendi!")
+model = AutoModel.from_pretrained("dbmdz/bert-base-turkish-cased")
 
 def get_combined_text(recipe):
-    ingredients = " ".join(
-        f"{ing.get('quantity', '')} {ing.get('name', '')}".strip()
-        for ing in recipe.get('ingredientList', [])
-    )
+    ingredients = " ".join([f"{ing.get('quantity', '')} {ing.get('name', '')}".strip() for ing in recipe.get('ingredientList', [])])
     return f"{recipe.get('title', '')} {recipe.get('description', '')} {ingredients}".strip()
 
 @lru_cache(maxsize=1000)
@@ -40,201 +29,164 @@ def get_embedding(text):
     with torch.no_grad():
         outputs = model(**inputs)
     last_hidden = outputs.last_hidden_state
-    mask        = inputs['attention_mask'].unsqueeze(-1).expand(last_hidden.size()).float()
-    summed      = torch.sum(last_hidden * mask, dim=1)
-    counts      = torch.clamp(mask.sum(dim=1), min=1e-9)
-    return (summed / counts).squeeze().numpy()
-
-def get_batch_embeddings(texts):
-    return [get_embedding(t) for t in texts] if texts else []
+    attention_mask = inputs['attention_mask']
+    mask_expanded = attention_mask.unsqueeze(-1).expand(last_hidden.size()).float()
+    sum_embeddings = torch.sum(last_hidden * mask_expanded, dim=1)
+    sum_mask = torch.clamp(mask_expanded.sum(dim=1), min=1e-9)
+    return (sum_embeddings / sum_mask).squeeze().numpy()
 
 def fetch_data(url):
     try:
-        r = requests.get(url)
-        r.raise_for_status()
-        return r.json()
-    except Exception as e:
-        print(f"API Error ({url}): {e}")
+        response = requests.get(url)
+        response.raise_for_status()
+        return response.json()
+    except requests.exceptions.RequestException:
         return None
-
-def filter_user_interactions(data, user_id):
-    return [i for i in data if i.get('userId') == user_id] if data else []
-
-def check_api_connections():
-    apis = {"recipes": RECIPES_URL, "likes": LIKES_URL, "favorites": FAVORITES_URL}
-    status = {}
-    for name, url in apis.items():
-        try:
-            status[name] = requests.head(url, timeout=2).status_code == 200
-        except:
-            status[name] = False
-    return status
 
 @app.route('/health', methods=['GET'])
 def health_check():
-    return jsonify({
+    status = {
         "status": "healthy",
-        "model_loaded": model is not None,
-        "api_connections": check_api_connections()
-    })
-
-@app.route('/evaluate', methods=['GET'])
-def evaluate_recommendation_system():
-    global train_data, test_data
-
-    all_recipes   = fetch_data(RECIPES_URL)
-    all_likes     = fetch_data(LIKES_URL)
-    all_favorites = fetch_data(FAVORITES_URL)
-    if any(x is None for x in (all_recipes, all_likes, all_favorites)):
-        return jsonify({"error": "Veriler alınamadı"}), 500
-
-    user_interactions = defaultdict(set)
-    for e in all_likes + all_favorites:
-        user_interactions[e["userId"]].add(e["recipeId"])
-
-    train_data.clear()
-    test_data.clear()
-    for user, items in user_interactions.items():
-        if len(items) < 3:
-            continue
-        items = list(items)
-        random.shuffle(items)
-        split = int(0.8 * len(items))
-        train_data[user] = set(items[:split])
-        test_data[user]  = set(items[split:])
-
-    def precision_at_k(pred, actual, k=10):
-        return len(set(pred[:k]) & actual) / k if pred else 0.0
-
-    def recall_at_k(pred, actual, k=10):
-        return len(set(pred[:k]) & actual) / len(actual) if actual else 0.0
-
-    def ndcg_at_k(pred, actual, k=10):
-        y_true  = [[1 if pid in actual else 0 for pid in pred[:k]]]
-        y_score = [[k - i for i in range(len(pred[:k]))]]
-        return ndcg_score(y_true, y_score)
-
-    precision_list, recall_list, ndcg_list = [], [], []
-    for user_id, actual in test_data.items():
-        resp = requests.get(f"http://localhost:5000/recommendations/{user_id}")
-        if resp.status_code != 200:
-            continue
-        predicted = [r["id"] for r in resp.json()]
-        if not predicted or not actual:
-            continue
-        precision_list.append(precision_at_k(predicted, actual))
-        recall_list.append(recall_at_k(predicted, actual))
-        ndcg_list.append(ndcg_at_k(predicted, actual))
-
-    mean = lambda xs: round(sum(xs)/len(xs), 4) if xs else 0.0
-    return jsonify({
-        "tested_users": len(precision_list),
-        "precision@10": mean(precision_list),
-        "recall@10":    mean(recall_list),
-        "ndcg@10":      mean(ndcg_list)
-    })
+        "model_loaded": True,
+        "api_connections": {
+            "recipes": requests.head(RECIPES_URL).status_code == 200,
+            "likes": requests.head(LIKES_URL).status_code == 200,
+            "favorites": requests.head(FAVORITES_URL).status_code == 200
+        }
+    }
+    return jsonify(status)
 
 @app.route('/recommendations/<int:user_id>', methods=['GET'])
 def get_recommendations(user_id):
-    max_prep_time = request.args.get('max_prep_time', type=int)
-    max_calories  = request.args.get('max_calories', type=int)
-    diversity     = float(request.args.get('diversity', 0.3))
-
-    all_recipes   = fetch_data(RECIPES_URL)
-    all_likes     = fetch_data(LIKES_URL)
+    all_recipes = fetch_data(RECIPES_URL)
+    all_likes = fetch_data(LIKES_URL)
     all_favorites = fetch_data(FAVORITES_URL)
-    if any(x is None for x in (all_recipes, all_likes, all_favorites)):
-        return jsonify({"error": "Temel veriler alınamadı"}), 500
 
-    user_likes     = filter_user_interactions(all_likes, user_id)
-    user_favorites = filter_user_interactions(all_favorites, user_id)
-    liked_ids      = {l['recipeId'] for l in user_likes}
-    favorited_ids  = {f['recipeId'] for f in user_favorites}
+    if not all([all_recipes, all_likes, all_favorites]):
+        return jsonify({"error": "Veri alınamadı"}), 500
 
-    interactions = {
-        rid: (2.5 if rid in liked_ids and rid in favorited_ids
-              else 1.5 if rid in favorited_ids
-              else 1.2)
-        for rid in (liked_ids | favorited_ids)
+    user_interactions = {
+        "likes": [like['recipeId'] for like in all_likes if like['userId'] == user_id],
+        "favorites": [fav['recipeId'] for fav in all_favorites if fav['userId'] == user_id]
     }
 
     recipes = {r['id']: r for r in all_recipes}
-    if max_prep_time:
-        recipes = {i:r for i,r in recipes.items() if r.get('prepTime', float('inf')) <= max_prep_time}
-    if max_calories:
-        recipes = {i:r for i,r in recipes.items() if r.get('calories', float('inf')) <= max_calories}
-
-    train_items = train_data.get(user_id, set())
-
-    weighted_embs = []
-    for rid, w in interactions.items():
+    embeddings = []
+    
+    for rid in set(user_interactions["likes"] + user_interactions["favorites"]):
         if rid in recipes:
-            weighted_embs.append(get_embedding(get_combined_text(recipes[rid])) * w)
-    if not weighted_embs:
-        return jsonify({"message": "Yeterli veri yok"}), 400
+            text = get_combined_text(recipes[rid])
+            weight = 2.0 if (rid in user_interactions["likes"] and rid in user_interactions["favorites"]) else 1.5 if rid in user_interactions["favorites"] else 1.2
+            embeddings.append(get_embedding(text) * weight)
 
-    recipe_ids   = list(recipes.keys())
-    embeddings   = get_batch_embeddings([get_combined_text(recipes[i]) for i in recipe_ids])
-    user_profile = np.mean(weighted_embs, axis=0)
-    sims         = cosine_similarity([user_profile], np.array(embeddings))[0]
+    if not embeddings:
+        return jsonify({"message": "Yetersiz veri"}), 400
 
+    user_profile = np.mean(embeddings, axis=0)
+    all_embeddings = [get_embedding(get_combined_text(r)) for r in all_recipes]
+    similarities = cosine_similarity([user_profile], all_embeddings)[0]
+    
     results = []
-    for idx, rid in enumerate(recipe_ids):
-        # Burada hem eğitim hem de kullanıcıya ait like/favorite filtresi:
-        if rid in train_items or rid in liked_ids or rid in favorited_ids:
-            continue
-        r = recipes[rid]
-        results.append({
-            "id":             rid,
-            "title":          r.get('title'),
-            "description":    r.get('description'),
-            "prepTime":       r.get('prepTime'),
-            "calories":       r.get('calories'),
-            "createdAt":      r.get('createdAt'),
-            "likeCount":      r.get('likeCount'),
-            "userId":         r.get('userId'),
-            "score":          float(sims[idx]),
-            "imageUrl":       r.get('imageUrl')
-        })
-
+    for idx, recipe in enumerate(all_recipes):
+        if recipe['id'] not in user_interactions["likes"] + user_interactions["favorites"]:
+            results.append({
+                "id": recipe['id'],
+                "score": float(similarities[idx]),
+                **{k: v for k, v in recipe.items() if k != 'ingredientList'}
+            })
+    
     results.sort(key=lambda x: x['score'], reverse=True)
-    if diversity > 0:
-        top5 = results[:5]
-        rest = results[5:30]
-        random.seed(user_id)
-        random.shuffle(rest)
-        return jsonify(top5 + rest[:15])
     return jsonify(results[:20])
 
-@app.route('/similar-recipes/<int:recipe_id>', methods=['GET'])
-def get_similar_recipes(recipe_id):
-    limit = request.args.get('limit', default=10, type=int)
+@app.route('/evaluate', methods=['GET'])
+def evaluate_metrics():
+    K = 10
+    TEST_SIZE = 0.2
     all_recipes = fetch_data(RECIPES_URL)
-    if all_recipes is None:
-        return jsonify({"error": "Tarifler alınamadı"}), 500
+    all_likes = fetch_data(LIKES_URL)
+    all_favorites = fetch_data(FAVORITES_URL)
+
+    if not all([all_recipes, all_likes, all_favorites]):
+        return jsonify({"error": "Veri alınamadı"}), 500
+
     recipes = {r['id']: r for r in all_recipes}
-    if recipe_id not in recipes:
-        return jsonify({"error": "Tarif bulunamadı"}), 404
+    user_interactions = defaultdict(dict)
 
-    tgt_emb = get_embedding(get_combined_text(recipes[recipe_id]))
-    others, ids = [], []
-    for rid, r in recipes.items():
-        if rid == recipe_id: continue
-        ids.append(rid)
-        others.append(get_embedding(get_combined_text(r)))
+    for like in all_likes:
+        user_id = like['userId']
+        rid = like['recipeId']
+        user_interactions[user_id].setdefault(rid, {'like': False, 'favorite': False})
+        user_interactions[user_id][rid]['like'] = True
 
-    sims = cosine_similarity([tgt_emb], others)[0]
-    results = [{
-        "id":              rid,
-        "title":           recipes[rid]['title'],
-        "description":     recipes[rid]['description'],
-        "prepTime":        recipes[rid]['prepTime'],
-        "calories":        recipes[rid]['calories'],
-        "imageUrl":        recipes[rid]['imageUrl'],
-        "similarity_score": float(sims[i])
-    } for i, rid in enumerate(ids)]
-    results.sort(key=lambda x: x['similarity_score'], reverse=True)
-    return jsonify(results[:limit])
+    for fav in all_favorites:
+        user_id = fav['userId']
+        rid = fav['recipeId']
+        user_interactions[user_id].setdefault(rid, {'like': False, 'favorite': False})
+        user_interactions[user_id][rid]['favorite'] = True
+
+    total_precision = 0.0
+    total_recall = 0.0
+    total_ndcg = 0.0
+    num_users = 0
+
+    for user_id, interactions in user_interactions.items():
+        if len(interactions) < 2:
+            continue
+
+        rids = list(interactions.keys())
+        try:
+            train_rids, test_rids = train_test_split(rids, test_size=TEST_SIZE, random_state=42)
+        except ValueError:
+            continue
+
+        if not test_rids:
+            continue
+
+        embeddings = []
+        for rid in train_rids:
+            weight = 2.0 if interactions[rid]['like'] and interactions[rid]['favorite'] else 1.5 if interactions[rid]['favorite'] else 1.2
+            text = get_combined_text(recipes[rid])
+            embeddings.append(get_embedding(text) * weight)
+
+        if not embeddings:
+            continue
+
+        user_profile = np.mean(embeddings, axis=0)
+        candidate_rids = [rid for rid in recipes.keys() if rid not in train_rids]
+        candidate_embeddings = [get_embedding(get_combined_text(recipes[rid])) for rid in candidate_rids]
+
+        if not candidate_embeddings:
+            continue
+
+        similarities = cosine_similarity([user_profile], candidate_embeddings)[0]
+        top_k_indices = np.argsort(similarities)[::-1][:K]
+        top_k_rids = [candidate_rids[i] for i in top_k_indices]
+
+        hits = sum(1 for rid in top_k_rids if rid in test_rids)
+        precision = hits / K
+        recall = hits / len(test_rids) if test_rids else 0
+
+        dcg = sum(1 / np.log2(i + 2) for i, rid in enumerate(top_k_rids) if rid in test_rids)
+        idcg = sum(1 / np.log2(i + 2) for i in range(min(len(test_rids), K)))
+        ndcg = dcg / idcg if idcg > 0 else 0
+
+        total_precision += precision
+        total_recall += recall
+        total_ndcg += ndcg
+        num_users += 1
+
+    if num_users == 0:
+        return jsonify({"error": "Değerlendirilebilir kullanıcı yok"}), 400
+
+    return jsonify({
+        "parameters": {"k": K, "test_size": TEST_SIZE},
+        "metrics": {
+            "precision@k": total_precision / num_users,
+            "recall@k": total_recall / num_users,
+            "ndcg@k": total_ndcg / num_users
+        },
+        "evaluated_users": num_users
+    })
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5000)

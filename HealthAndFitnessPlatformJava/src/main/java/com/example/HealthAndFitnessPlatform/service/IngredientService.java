@@ -7,6 +7,7 @@ import com.example.HealthAndFitnessPlatform.model.Recipe;
 import com.example.HealthAndFitnessPlatform.repository.IngredientRepository;
 import com.example.HealthAndFitnessPlatform.repository.RecipeRepository;
 import jakarta.transaction.Transactional;
+import org.antlr.v4.runtime.atn.LexerATNSimulator;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -40,10 +41,17 @@ public class IngredientService {
         return modelMapper.map(ingredient,IngredientDTO.class);
     }
 
-    public IngredientDTO createIngredient(IngredientDTO ingredient){
-        Ingredient firstIngredient = modelMapper.map(ingredient,Ingredient.class);
-        Ingredient lastIngredient = ingredientRepository.save(firstIngredient);
-        return modelMapper.map(lastIngredient,IngredientDTO.class);
+    public IngredientDTO createIngredient(int recipeId,IngredientDTO ingredientDto){
+        Recipe recipe = recipeRepository.findById(recipeId)
+                .orElseThrow(() -> new RuntimeException("Recipe : "+recipeId));
+
+        Ingredient lastIng = modelMapper.map(ingredientDto, Ingredient.class);
+        Ingredient saved = ingredientRepository.save(lastIng);
+
+        recipe.getIngredientList().add(saved);
+        recipeRepository.save(recipe);
+        return modelMapper.map(saved,IngredientDTO.class);
+
     }
 
     @Transactional
@@ -55,9 +63,19 @@ public class IngredientService {
         return modelMapper.map(lastIngredient,IngredientDTO.class);
     }
 
-    public void deleteIngredient(int ingredientId){
-            Ingredient ingredient = ingredientRepository.findById(ingredientId).orElseThrow(() -> new IngredientNotFoundException("Ingredient not found : "+ingredientId));
-            ingredientRepository.delete(ingredient);
+    @Transactional
+    public void deleteIngredient(int ingredientId) {
+        Ingredient ing = ingredientRepository.findById(ingredientId)
+                .orElseThrow(() -> new IngredientNotFoundException("ingredientId : "+ingredientId));
+
+        // 1) Her ilişkili recipe'den ingredient'i çıkar
+        for (Recipe r : ing.getRecipeList()) {
+            r.getIngredientList().remove(ing);
+        }
+        recipeRepository.saveAll(ing.getRecipeList());
+
+        // 3) Şimdi ingredient'ı sil
+        ingredientRepository.delete(ing);
     }
 
 

@@ -20,8 +20,8 @@ export class IngredientService {
       return this.http.get<Ingredient>(`${this.baseURL}/${ingredientId}`);
   }
 
-  createIngredient(ingredient:Ingredient) : Observable<Ingredient>{
-      return this.http.post<Ingredient>(`${this.baseURL}/create`,ingredient);
+  createIngredient(recipeId:number,ingredient:Ingredient) : Observable<Ingredient>{
+      return this.http.post<Ingredient>(`${this.baseURL}/create/${recipeId}`,ingredient);
   }
 
   updateIngredient(ingredientId:number,ingredient:Ingredient) : Observable<Ingredient>{

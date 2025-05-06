@@ -12,7 +12,7 @@
     <!-- 👉 grid container -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
       <!-- 👉 her kart için ngFor burada -->
-      <div *ngFor="let recipe of recipeList" class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col">
+      <div *ngFor="let recipe of recipeList | slice:0:6" class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col">
         <div class="h-48 bg-gray-200 animate-pulse">
           <img [src]="'http://localhost:8080/' + recipe.imageUrl" class="object-cover w-full h-full">
         </div>

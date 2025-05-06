@@ -33,9 +33,9 @@ public class IngredientController {
             return new ResponseEntity<>(ingredient,HttpStatus.OK);
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<IngredientDTO> createIngredient(@Valid @RequestBody IngredientDTO ingredientDTO){
-            IngredientDTO ingredient = ingredientService.createIngredient(ingredientDTO);
+    @PostMapping("/create/{recipeId}")
+    public ResponseEntity<IngredientDTO> createIngredient(@PathVariable int recipeId,@Valid @RequestBody IngredientDTO ingredientDTO){
+            IngredientDTO ingredient = ingredientService.createIngredient(recipeId,ingredientDTO);
             return new ResponseEntity<>(ingredient,HttpStatus.CREATED);
     }
 
@@ -48,7 +48,7 @@ public class IngredientController {
     @DeleteMapping("/{ingredientId}")
     public ResponseEntity<Void> deleteIngredient(@PathVariable int ingredientId){
                 ingredientService.deleteIngredient(ingredientId);
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                return  ResponseEntity.noContent().build();
     }
 
 }

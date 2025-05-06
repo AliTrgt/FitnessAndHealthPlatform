@@ -18,6 +18,7 @@ import { Like } from '../../model/like';
 import { resolveAny } from 'dns';
 import { getRandomValues, sign } from 'crypto';
 import { forkJoin, Observable, of } from 'rxjs';
+import { ReversePipe } from '../pipe/reverse.pipe';
 
 
 @Component({

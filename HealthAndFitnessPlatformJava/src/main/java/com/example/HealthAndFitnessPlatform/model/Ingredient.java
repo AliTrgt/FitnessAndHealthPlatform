@@ -25,7 +25,7 @@ public class Ingredient {
 
     private int quantity;
 
-    @ManyToMany(mappedBy = "ingredientList",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "ingredientList",fetch = FetchType.LAZY)
     private List<Recipe> recipeList;
 
     public Ingredient(String name, int quantity) {
