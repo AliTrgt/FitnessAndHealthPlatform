@@ -16,12 +16,13 @@ import { Comment } from '../../model/comment';
 import { forkJoin } from 'rxjs';
 import { Favorite } from '../../model/favorite';
 import { FavoriteService } from '../../service/favorite/favorite.service';
+import { ReversePipe } from '../pipe/reverse.pipe';
 
 
 @Component({
   selector: 'app-recipe',
   standalone: true,
-  imports: [CommonModule, DateAgoPipe, ReactiveFormsModule,RouterLink,FormsModule],
+  imports: [CommonModule, DateAgoPipe, ReactiveFormsModule,RouterLink,FormsModule,ReversePipe],
   templateUrl: './recipe.component.html',
   styleUrl: './recipe.component.css',
 })

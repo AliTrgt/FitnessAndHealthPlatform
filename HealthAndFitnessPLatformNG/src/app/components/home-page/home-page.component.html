@@ -27,8 +27,7 @@
   <main class="md:ml-64 lg:mr-80 py-6 px-4">
     <section class="max-w-3xl mx-auto space-y-8">
       <!-- Tarif Listesi -->
-      <div class="grid grid-cols-1 gap-6 lg:pr-8">
-        @for (recipe of recipes(); track recipe.id; let i = $index) {
+      <div class="grid grid-cols-1 gap-6 lg:pr-8" *ngFor="let recipe of recipes()?.reverse(); let i = index">
           <article class="bg-white rounded-xl shadow-md border border-green-100 overflow-hidden hover:shadow-lg transition-shadow duration-300">
             <div class="flex items-center p-4 bg-green-50/30 cursor-pointer" [routerLink]="['/userprofile',recipe.userId]">
               <div class="w-10 h-10 rounded-full bg-gradient-to-br from-green-400 to-yellow-400 p-0.5">
@@ -104,7 +103,6 @@
               </button>
             </div>
           </article>
-        }
       </div>
     </section>
   </main>

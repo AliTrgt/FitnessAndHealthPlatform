@@ -135,7 +135,7 @@
 
             <!-- Yorum Listesi -->
             <div class="space-y-4">
-              <div class="flex items-start space-x-4" *ngFor="let comment of recipe.commentList; let i = index">
+              <div class="flex items-start space-x-4" *ngFor="let comment of recipe.commentList | reverse ; let i = index">
                 <img [routerLink]="['/userprofile',comment.userId]"
                   src="https://randomuser.me/api/portraits/women/44.jpg"
                   class="w-10 h-10 rounded-full border-2 border-green-200 cursor-pointer">
