@@ -16,9 +16,8 @@ public class DatabaseLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        createRoleIfNotFound("ROLE_CUSTOMER");
-        createRoleIfNotFound("ROLE_MANAGER");
-        createRoleIfNotFound("ROLE_ADMIN");
+        createRoleIfNotFound("ROLE_MEMBER");
+        createRoleIfNotFound("ROLE_CREATOR");
     }
 
     private void createRoleIfNotFound(String roleName) {

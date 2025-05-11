@@ -75,23 +75,20 @@
             <label class="block text-sm font-medium text-green-700 mb-2">Hesap Türü</label>
             <div class="flex flex-wrap gap-4 justify-between">
               <div class="flex items-center">
-                <input id="role-customer" type="radio" formControlName="authorities" 
-                  [value]="{ id: 1, role: 'ROLE_CUSTOMER' }"
+                <input id="role-member" type="radio" formControlName="authorities" 
+                  [value]="{ id: 5, role: 'ROLE_MEMBER' }"
+                  value="ROLE_MEMBER"
                   class="h-4 w-4 text-green-600 border-green-300 focus:ring-green-500">
-                <label for="role-customer" class="ml-2 text-sm text-green-600">Müşteri</label>
+                <label for="role-customer" class="ml-2 text-sm text-green-600">Üye</label>
               </div>
               <div class="flex items-center">
-                <input id="role-manager" type="radio" formControlName="authorities" 
-                  [value]="{ id: 2, role: 'ROLE_MANAGER' }"
+                <input id="role-creator" type="radio" formControlName="authorities" 
+                  [value]="{ id: 7, role: 'ROLE_CREATOR' }"
+                  value="ROLE_CREATOR"
                   class="h-4 w-4 text-green-600 border-green-300 focus:ring-green-500">
-                <label for="role-manager" class="ml-2 text-sm text-green-600">Yönetici</label>
+                <label for="role-manager" class="ml-2 text-sm text-green-600">İçerik Üreticisi</label>
               </div>
-              <div class="flex items-center">
-                <input id="role-admin" type="radio" formControlName="authorities" 
-                  [value]="{ id: 3, role: 'ROLE_ADMIN' }"
-                  class="h-4 w-4 text-green-600 border-green-300 focus:ring-green-500">
-                <label for="role-admin" class="ml-2 text-sm text-green-600">Admin</label>
-              </div>
+             
             </div>
           </div>
 

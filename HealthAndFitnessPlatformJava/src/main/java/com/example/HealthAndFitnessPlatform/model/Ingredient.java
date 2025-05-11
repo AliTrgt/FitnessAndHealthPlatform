@@ -23,12 +23,12 @@ public class Ingredient {
     @NotNull
     private String name;
 
-    private int quantity;
+    private String quantity;
 
     @ManyToMany(mappedBy = "ingredientList",fetch = FetchType.LAZY)
     private List<Recipe> recipeList;
 
-    public Ingredient(String name, int quantity) {
+    public Ingredient(String name, String quantity) {
         this.name = name;
         this.quantity = quantity;
     }
