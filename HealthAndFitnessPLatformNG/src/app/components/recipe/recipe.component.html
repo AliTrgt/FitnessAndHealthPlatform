@@ -68,7 +68,7 @@
       <!-- Hazırlanış -->
       <div class="lg:col-span-2">
         <div class="bg-white p-8 rounded-xl shadow-sm border border-green-100">
-          <h2 class="text-2xl font-bold text-green-900 mb-6"> {{recipe.description}} </h2>
+          <p class="text-2xl font-bold text-green-900 mb-6"> {{recipe.description}} </p>
           <div class="space-y-6">
             <!-- Adım 1 -->
             <div class="flex" *ngFor="let instruction of recipe.instructions.split('\n'); let i = index">
@@ -137,7 +137,7 @@
             <div class="space-y-4">
               <div class="flex items-start space-x-4" *ngFor="let comment of recipe.commentList | reverse ; let i = index">
                 <img [routerLink]="['/userprofile',comment.userId]"
-                  src="https://randomuser.me/api/portraits/women/44.jpg"
+                  [src]="'http://localhost:8080/' + userProfilePhotos.get(comment.userId) "
                   class="w-10 h-10 rounded-full border-2 border-green-200 cursor-pointer">
                 <div class="flex-1">
                   <div class="bg-green-50 p-4 rounded-lg">

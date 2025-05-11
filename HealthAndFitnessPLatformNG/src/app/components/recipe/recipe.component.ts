@@ -34,6 +34,7 @@ export class RecipeComponent implements OnInit {
   commentList!: Comment[];
   usernameList: string[] = [];
   dateList: string[] = [];
+  userProfilePhotos = new Map<number, string>(); // ← EKLENDİ
   isOpen: boolean = false;
   isFavorited:boolean = false;
   commentSectionForm: FormGroup = new FormGroup({
@@ -64,15 +65,15 @@ export class RecipeComponent implements OnInit {
   getRecipeById() {
     this.recipeService.findById(this.recipeId).subscribe(response => {
       this.recipe = response;
-      console.log(this.recipe.imageUrl);
-      // Tüm yorumlar için kullanıcı isimlerini tek seferde çek
-      const userObservables = this.recipe.commentList.map(comment => 
+      const userObservables = this.recipe.commentList.map(comment =>
         this.userService.findById(comment.userId)
       );
-  
+
       forkJoin(userObservables).subscribe(users => {
-        // Kullanıcı isimlerini commentList sırasıyla eşleştir
         this.usernameList = users.map(user => user.username);
+        users.forEach(user => {
+          this.userProfilePhotos.set(user.id, user.profilePhoto); // ← EKLENDİ
+        });
       });
     });
   }

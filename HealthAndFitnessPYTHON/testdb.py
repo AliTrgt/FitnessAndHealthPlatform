@@ -100,8 +100,8 @@ def get_recommendations(user_id):
 
 @app.route('/evaluate', methods=['GET'])
 def evaluate_metrics():
-    K = 10
-    TEST_SIZE = 0.2
+    K = 30
+    TEST_SIZE = 0.4
     all_recipes = fetch_data(RECIPES_URL)
     all_likes = fetch_data(LIKES_URL)
     all_favorites = fetch_data(FAVORITES_URL)
