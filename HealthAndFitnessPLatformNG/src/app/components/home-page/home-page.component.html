@@ -31,7 +31,7 @@
           <article class="bg-white rounded-xl shadow-md border border-green-100 overflow-hidden hover:shadow-lg transition-shadow duration-300">
             <div class="flex items-center p-4 bg-green-50/30 cursor-pointer" [routerLink]="['/userprofile',recipe.userId]">
               <div class="w-10 h-10 rounded-full bg-gradient-to-br from-green-400 to-yellow-400 p-0.5">
-                <img [src]="'http://localhost:8080/' + (userMap.get(recipe.userId)?.profilePhoto || 'defaultPhoto.png') " class="w-full h-full rounded-full object-cover border-2 border-white">
+                <img loading="lazy" [src]="'http://localhost:8080/' + (userMap.get(recipe.userId)?.profilePhoto || 'defaultPhoto.png')" class="w-full h-full rounded-full object-cover border-2 border-white">
               </div>
               <div class="ml-3">
                 <h3 class="font-semibold text-green-800">{{usernameList[i]}}</h3>
@@ -47,7 +47,7 @@
             </div>
 
             <div class="relative aspect-[8/3] w-full">
-              <img [src]="'http://localhost:8080/' + recipe.imageUrl" class="w-full h-full object-cover" />
+              <img loading="lazy" [src]="'http://localhost:8080/' + recipe.imageUrl" class="w-full h-full object-cover" />
               <span class="absolute top-2 right-2 bg-white px-2.5 py-1 rounded-full text-sm font-medium text-green-700 shadow-sm">
                 🥑 {{recipe.ingredientList.length}} Malzeme
               </span>

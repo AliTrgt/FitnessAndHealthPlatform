@@ -1,7 +1,6 @@
 from flask import Flask, jsonify
 import requests
-from transformers import AutoTokenizer, AutoModel
-import torch
+from sentence_transformers import SentenceTransformer
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 
@@ -12,26 +11,21 @@ RECIPES_URL = "http://localhost:8080/v1/recipe"
 LIKES_URL = "http://localhost:8080/v1/like"
 FAVORITES_URL = "http://localhost:8080/v1/favorite"
 
-# BERT Tokenizer ve Model
-tokenizer = AutoTokenizer.from_pretrained("dbmdz/bert-base-turkish-cased")
-model = AutoModel.from_pretrained("dbmdz/bert-base-turkish-cased")
+# Model yükleniyor (daha etkili, çok dilli model)
+model = SentenceTransformer('sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2')
 
 def get_combined_text(recipe):
-    """title, description ve ingredient (quantity + name) alanlarını birleştirir"""
-    ingredients = " ".join([
-        f"{ing.get('quantity', '')} {ing.get('name', '')}".strip()
-        for ing in recipe.get('ingredientList', [])
-    ])
-    return f"{recipe.get('title', '')} {recipe.get('description', '')} {ingredients}".strip()
+    """title, description ve ingredientList alanlarını birleştirir"""
+    title = recipe.get('title', '')
+    description = recipe.get('description', '')
+    ingredients = " ".join(recipe.get('ingredientList', []))
+    return f"{title} {description} {ingredients}".strip()
 
 def get_embedding(text):
-    """Metni BERT embedding'ine dönüştürür"""
+    """Metni embedding'e dönüştürür"""
     if not text:
-        return np.zeros(768)  # Boş metin için fallback
-    inputs = tokenizer(text, return_tensors="pt", truncation=True, padding=True, max_length=512)
-    with torch.no_grad():
-        outputs = model(**inputs)
-    return outputs.last_hidden_state[:, 0, :].squeeze().numpy()
+        return np.zeros(384)  # Bu model 384 boyutlu
+    return model.encode(text)
 
 def fetch_data(url):
     """API'den veri çeker"""
@@ -54,24 +48,23 @@ def get_recommendations(user_id):
     all_likes = fetch_data(LIKES_URL)
     all_favorites = fetch_data(FAVORITES_URL)
 
-    # Hata kontrolü
     if not all([all_recipes, all_likes is not None, all_favorites is not None]):
         return jsonify({"error": "Temel veriler alınamadı"}), 500
 
     user_likes = filter_user_interactions(all_likes, user_id)
     user_favorites = filter_user_interactions(all_favorites, user_id)
-    
-    liked_ids = [like['recipeId'] for like in user_likes]
-    favorited_ids = [fav['recipeId'] for fav in user_favorites]
-    
-    # Ağırlıklandırma
+
+    liked_ids = [int(like['recipeId']) for like in user_likes]
+    favorited_ids = [int(fav['recipeId']) for fav in user_favorites]
+
+    # Ağırlıklı kullanıcı etkileşimleri
     interactions = {}
     for rid in set(liked_ids + favorited_ids):
-        interactions[rid] = 2.0 if (rid in liked_ids and rid in favorited_ids) else 1.5 if rid in favorited_ids else 1.2
+        interactions[int(rid)] = 2.0 if (rid in liked_ids and rid in favorited_ids) else 1.5 if rid in favorited_ids else 1.2
 
-    # Tarif sözlüğü
-    recipes = {r['id']: r for r in all_recipes}
+    recipes = {int(r['id']): r for r in all_recipes}
 
+    # Kullanıcı profil embedding'i
     weighted_embeddings = []
     for rid, weight in interactions.items():
         if rid in recipes:
@@ -83,26 +76,24 @@ def get_recommendations(user_id):
                 print(f"Embedding hatası - Recipe {rid}: {str(e)}")
 
     if not weighted_embeddings:
-        return jsonify({"message": "Yeterli veri yok"}), 400
+        return jsonify({"message": "Yeterli etkileşim verisi yok"}), 400
 
     # Tüm tariflerin embedding'leri
-    recipe_embeddings = []
-    for r in recipes.values():
-        try:
-            combined_text = get_combined_text(r)
-            recipe_embeddings.append(get_embedding(combined_text))
-        except Exception as e:
-            print(f"Tarif {r['id']} embedding hatası: {str(e)}")
-            recipe_embeddings.append(np.zeros(768))  # Fallback
-    
-    # Benzerlik hesapla
-    user_profile = np.mean(weighted_embeddings, axis=0)
-    similarities = cosine_similarity([user_profile], np.array(recipe_embeddings))[0]
+    recipe_ids = list(recipes.keys())
+    recipe_texts = [get_combined_text(recipes[rid]) for rid in recipe_ids]
+    recipe_embeddings = np.array([get_embedding(text) for text in recipe_texts])
 
-    # Sonuçları bastır
+    # Ortalama kullanıcı profili
+    user_profile = np.mean(weighted_embeddings, axis=0)
+
+    # Benzerlik hesapla
+    similarities = cosine_similarity([user_profile], recipe_embeddings)[0]
+
+    # Önerileri topla
     results = []
-    for idx, (rid, recipe) in enumerate(recipes.items()):
-        if rid not in interactions:
+    for idx, rid in enumerate(recipe_ids):
+        if rid not in interactions and similarities[idx] > 0.5:  # 0.5 eşik değeri
+            recipe = recipes[rid]
             results.append({
                 "id": rid,
                 "title": recipe.get('title'),
@@ -119,7 +110,6 @@ def get_recommendations(user_id):
                 "imageUrl": recipe.get('imageUrl')
             })
 
-    # Sırala ve dön
     results.sort(key=lambda x: x['score'], reverse=True)
     return jsonify(results[:20])
 

@@ -16,6 +16,10 @@ export class RecipeService {
       return this.http.get<Recipe[]>(`${this.baseURL}`);
   }
 
+  getRecipes(page:number = 0){
+        return this.http.get<any>(`${this.baseURL}/recipes?page=${page}`)
+  }
+
   findById(recipeId:number) : Observable<Recipe>{
       return this.http.get<Recipe>(`${this.baseURL}/${recipeId}`);
   }

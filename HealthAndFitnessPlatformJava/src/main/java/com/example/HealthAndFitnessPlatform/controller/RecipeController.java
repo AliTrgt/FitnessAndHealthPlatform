@@ -2,10 +2,19 @@ package com.example.HealthAndFitnessPlatform.controller;
 
 import com.example.HealthAndFitnessPlatform.dto.RecipeDTO;
 import com.example.HealthAndFitnessPlatform.model.Recipe;
+import com.example.HealthAndFitnessPlatform.repository.RecipeRepository;
 import com.example.HealthAndFitnessPlatform.service.IngredientService;
 import com.example.HealthAndFitnessPlatform.service.RecipeService;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,10 +30,14 @@ public class RecipeController {
 
     private final RecipeService recipeService;
     private final ImageUploadController imageUploadController;
+    private final RecipeRepository recipeRepository;
+    private final ModelMapper modelMapper;
 
-    public RecipeController(RecipeService recipeService, ImageUploadController imageUploadController) {
+    public RecipeController(RecipeService recipeService, ImageUploadController imageUploadController, RecipeRepository recipeRepository, ModelMapper modelMapper) {
         this.recipeService = recipeService;
         this.imageUploadController = imageUploadController;
+        this.recipeRepository = recipeRepository;
+        this.modelMapper = modelMapper;
     }
 
     @GetMapping
@@ -65,6 +78,7 @@ public class RecipeController {
     }
 
     @GetMapping("/rec/{userId}")
+    @Transactional
     public ResponseEntity<List<RecipeDTO>> getRecommendation(@PathVariable int userId){
              List<RecipeDTO> recipeList = recipeService.getRecommendations(userId);
              return new ResponseEntity<>(recipeList,HttpStatus.OK);
@@ -80,6 +94,19 @@ public class RecipeController {
 
             return ResponseEntity.ok("Recipe Photo Uploaded : "+filePath);
 
+    }
+
+    @PostMapping("/bulk")
+    public ResponseEntity<?> uploadBulkRecipe(@RequestBody List<RecipeDTO> recipes){
+                recipes.forEach(recipeService::createRecipe);
+                return ResponseEntity.ok("Recipes uploaded successfully");
+    }
+
+
+    @GetMapping("/recipes")
+    public Page<RecipeDTO> getAllRecipes(@PageableDefault(page = 0,size = 10)Pageable pageable){
+        return recipeRepository.findAll(pageable)
+                .map(recipe -> modelMapper.map(recipe,RecipeDTO.class));
     }
 
 }
