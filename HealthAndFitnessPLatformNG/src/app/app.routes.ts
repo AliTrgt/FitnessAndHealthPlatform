@@ -16,19 +16,19 @@ import { UserProfileComponent } from './components/user-profile/user-profile.com
 import { FollowersFollowingComponent } from './components/followers-following/followers-following.component';
 
 export const routes: Routes = [
-     {path:"",component:HomePageComponent,pathMatch:"full"},
-     {path:"homepage",component:HomePageComponent},
-     {path:"recommend",component:RecommendComponent,canActivate:[AuthGuardService]},
-     {path:"favorites",component:FavoritesComponent,canActivate:[AuthGuardService]},
-     {path:"login",component:LoginComponent},
-     {path:"register",component:RegisterComponent},
-     {path:"profile",component:ProfileComponent,canActivate:[AuthGuardService]},
-     {path:"userprofile/:id",component:UserProfileComponent,canActivate:[AuthGuardService]},
-     {path:"recipe/:id",component:RecipeComponent,canActivate:[AuthGuardService]},
-     {path:"myrecipes",component:MyRecipesComponent,canActivate:[AuthGuardService]},
-     {path:"training",component:TrainingComponent,canActivate:[AuthGuardService]},
-     {path:"createRecipe",component:CreateRecipeComponent},
-     {path:"recipe/edit/:id",component:CreateRecipeComponent},
-     {path:"createTraining",component:CreateTrainingComponent},
-     {path:"followers",component:FollowersFollowingComponent}
+     { path: "", redirectTo: "homepage", pathMatch: "full" },
+     { path: "homepage", component: HomePageComponent },
+     { path: "recommend", component: RecommendComponent, canActivate: [AuthGuardService] },
+     { path: "favorites", component: FavoritesComponent, canActivate: [AuthGuardService] },
+     { path: "login", component: LoginComponent },
+     { path: "register", component: RegisterComponent },
+     { path: "profile", component: ProfileComponent, canActivate: [AuthGuardService] },
+     { path: "userprofile/:id", component: UserProfileComponent, canActivate: [AuthGuardService] },
+     { path: "recipe/:id", component: RecipeComponent, canActivate: [AuthGuardService] },
+     { path: "myrecipes", component: MyRecipesComponent, canActivate: [AuthGuardService] },
+     { path: "training", component: TrainingComponent, canActivate: [AuthGuardService] },
+     { path: "createRecipe", component: CreateRecipeComponent },
+     { path: "recipe/edit/:id", component: CreateRecipeComponent },
+     { path: "createTraining", component: CreateTrainingComponent },
+     { path: "followers", component: FollowersFollowingComponent }
 ];
