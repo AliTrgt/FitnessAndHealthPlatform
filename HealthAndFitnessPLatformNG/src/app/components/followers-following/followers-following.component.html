@@ -1,24 +1,33 @@
-<div class="mt-5 min-h-screen bg-gradient-to-b from-green-50 to-gray-50 p-8">
-  <div class="max-w-3xl mx-auto">
+<div class="mt-5 min-h-screen bg-gradient-to-br from-green-50 to-emerald-50 p-8">
+  <div class="max-w-3xl mx-auto mt-6">
+    <!-- Başlık ve Geri Dön Butonu -->
     <div class="mb-8">
-      <h2 class="text-3xl font-bold text-green-900 mb-2">Sosyal Bağlantılar</h2>
-      <div class="flex gap-4 border-b border-green-200">
+      <button routerLink="/profile" 
+              class="flex items-center text-emerald-600 hover:text-emerald-700 transition-colors group mb-4">
+        <svg class="w-5 h-5 mr-1 group-hover:-translate-x-1 transition-transform" 
+             fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+        </svg>
+        Profil Sayfasına Dön
+      </button>
+      <h2 class="text-3xl font-bold text-emerald-900 mb-2">Sosyal Bağlantılar</h2>
+      <div class="flex gap-4 border-b border-emerald-100">
         <button 
           (click)="setTab('followers')"
-          class="pb-2 px-1 transition-colors"
+          class="pb-2 px-1 transition-colors duration-200"
           [ngClass]="{
-            'border-b-2 border-green-600 text-green-700 font-medium': activeTab === 'followers',
-            'text-green-600 hover:text-green-700': activeTab !== 'followers'
+            'border-b-2 border-emerald-600 text-emerald-700 font-medium': activeTab === 'followers',
+            'text-emerald-600 hover:text-emerald-700': activeTab !== 'followers'
           }"
         >
           Takipçiler ({{followUsers.length}})
         </button>
         <button 
           (click)="setTab('following')"
-          class="pb-2 px-1 transition-colors"
+          class="pb-2 px-1 transition-colors duration-200"
           [ngClass]="{
-            'border-b-2 border-green-600 text-green-700 font-medium': activeTab === 'following',
-            'text-green-600 hover:text-green-700': activeTab !== 'following'
+            'border-b-2 border-emerald-600 text-emerald-700 font-medium': activeTab === 'following',
+            'text-emerald-600 hover:text-emerald-700': activeTab !== 'following'
           }"
         >
           Takip Edilenler ({{followingUsers.length}})
@@ -26,46 +35,51 @@
       </div>
     </div>
 
+    <!-- İçerik Alanı -->
     <div class="space-y-3">
-
-      <div *ngIf="users.length > 0 && activeTab == 'followers' " class="bg-white p-4 rounded-xl shadow-sm border border-green-100 hover:shadow-md transition-shadow">
-        <div *ngFor="let user of users" class="flex items-center justify-between mb-4">
+      <!-- Takipçi Listesi -->
+      <div *ngIf="users.length > 0 && activeTab == 'followers'" 
+           class="bg-white/95 backdrop-blur-sm p-4 rounded-xl shadow-sm border border-emerald-100/80 hover:shadow-emerald-200/50 transition-all">
+        <div *ngFor="let user of users" class="flex items-center justify-between mb-4 last:mb-0">
           <div class="flex items-center gap-4">
-            <div class="w-12 h-12 rounded-full bg-green-200 overflow-hidden">
+            <div class="w-12 h-12 rounded-full bg-emerald-200/80 overflow-hidden ring-2 ring-emerald-100">
               <img [src]="'http://localhost:8080/' + user.profilePhoto" class="w-full h-full object-cover">
             </div>
             <div>
-              <h3 class="font-semibold text-green-900">{{user.username}}</h3>
-              <p class="text-sm text-green-600">{{user.followers.length}} Takipçi</p>
+              <h3 class="font-semibold text-emerald-900">{{user.username}}</h3>
+              <p class="text-sm text-emerald-600/90">{{user.followers.length}} Takipçi</p>
             </div>
           </div>
         </div>
       </div>
 
-      <div *ngIf="activeTab == 'following' && fusers.length > 0" class="bg-white p-4 rounded-xl shadow-sm border border-green-100 hover:shadow-md transition-shadow">
-        <div *ngFor="let user of fusers" class="flex items-center justify-between mb-4">
+      <!-- Takip Edilenler Listesi -->
+      <div *ngIf="activeTab == 'following' && fusers.length > 0" 
+           class="bg-white/95 backdrop-blur-sm p-4 rounded-xl shadow-sm border border-emerald-100/80 hover:shadow-emerald-200/50 transition-all">
+        <div *ngFor="let user of fusers" class="flex items-center justify-between mb-4 last:mb-0">
           <div class="flex items-center gap-4">
-            <div class="w-12 h-12 rounded-full bg-green-200 overflow-hidden">
+            <div class="w-12 h-12 rounded-full bg-emerald-200/80 overflow-hidden ring-2 ring-emerald-100">
               <img [src]="'http://localhost:8080/' + user.profilePhoto" class="w-full h-full object-cover">
             </div>
             <div>
-              <h3 class="font-semibold text-green-900">{{user.username}}</h3>
-              <p class="text-sm text-green-600">{{user.followers.length}} Takipçi</p>
+              <h3 class="font-semibold text-emerald-900">{{user.username}}</h3>
+              <p class="text-sm text-emerald-600/90">{{user.followers.length}} Takipçi</p>
             </div>
           </div>
         </div>
       </div>
 
+      <!-- Boş Liste Durumu -->
       <div *ngIf="(activeTab === 'followers' && users.length === 0) || (activeTab === 'following' && fusers.length === 0)" 
-      class="bg-white p-8 rounded-xl text-center border-2 border-dashed border-green-200">
+           class="bg-white/95 backdrop-blur-sm p-8 rounded-xl text-center border-2 border-dashed border-emerald-200/80">
         <div class="max-w-xs mx-auto">
-     <svg class="w-16 h-16 mx-auto text-green-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
-     </svg>
-     <h4 class="text-lg font-medium text-green-900 mb-2">Henüz bağlantın yok</h4>
-     <p class="text-green-600">Yeni insanlar keşfet ve onları takip etmeye başla!</p>
-   </div>
- </div>
+          <svg class="w-16 h-16 mx-auto text-emerald-400/80 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+          </svg>
+          <h4 class="text-lg font-medium text-emerald-900 mb-2">Henüz bağlantın yok</h4>
+          <p class="text-emerald-600/90">Yeni insanlar keşfet ve onları takip etmeye başla!</p>
+        </div>
+      </div>
     </div>
   </div>
 </div>

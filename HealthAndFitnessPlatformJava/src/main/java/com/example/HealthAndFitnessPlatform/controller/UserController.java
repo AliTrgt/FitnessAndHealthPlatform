@@ -3,6 +3,7 @@ package com.example.HealthAndFitnessPlatform.controller;
 
 import com.example.HealthAndFitnessPlatform.dto.AuthRequest;
 import com.example.HealthAndFitnessPlatform.dto.BmiUpdateRequest;
+import com.example.HealthAndFitnessPlatform.dto.RecipeDTO;
 import com.example.HealthAndFitnessPlatform.dto.UserDTO;
 import com.example.HealthAndFitnessPlatform.model.User;
 import com.example.HealthAndFitnessPlatform.repository.UserRepository;
@@ -19,8 +20,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/v1/user")
@@ -105,7 +108,18 @@ public class UserController {
                     return ResponseEntity.ok("Profile Photo updated :  " + filePath);
     }
 
+    @PostMapping("/batch")
+    public ResponseEntity<List<UserDTO>> getUsersByIds(@RequestBody List<Integer> userIds) {
+        if (userIds == null || userIds.isEmpty()) {
+            return ResponseEntity.badRequest().body(Collections.emptyList());
+        }
 
+        List<User> users = userRepository.findAllById(userIds);
+
+        List<UserDTO> userDTOList =  users.stream().map(recipe -> modelMapper.map(recipe, UserDTO.class)).collect(Collectors.toList());
+
+      return   ResponseEntity.ok(userDTOList);
+    }
 
 
 }

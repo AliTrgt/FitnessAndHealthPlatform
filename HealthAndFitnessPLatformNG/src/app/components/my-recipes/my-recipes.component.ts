@@ -7,11 +7,13 @@ import { Recipe } from '../../model/recipe';
 import { RecipeService } from '../../service/recipe/recipe.service';
 import { RouterLink, RouterLinkWithHref } from '@angular/router';
 import { response } from 'express';
+import { ScrollingModule } from '@angular/cdk/scrolling';
+
 
 @Component({
   selector: 'app-my-recipes',
   standalone: true,
-  imports: [CommonModule, SidebarComponent,RouterLink],
+  imports: [CommonModule, SidebarComponent,RouterLink,ScrollingModule],
   templateUrl: './my-recipes.component.html',
   styleUrl: './my-recipes.component.css'
 })
@@ -36,6 +38,9 @@ export class MyRecipesComponent {
               this.recipeList.set(response);
               
         })
+    }
+    trackByRecipeId(index: number, recipe: any): number {
+      return recipe.id; // veya unique identifier
     }
 
     removeRecipe(id:number){

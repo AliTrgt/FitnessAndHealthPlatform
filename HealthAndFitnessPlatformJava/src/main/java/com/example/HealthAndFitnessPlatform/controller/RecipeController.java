@@ -103,10 +103,12 @@ public class RecipeController {
     }
 
 
-    @GetMapping("/recipes")
-    public Page<RecipeDTO> getAllRecipes(@PageableDefault(page = 0,size = 10)Pageable pageable){
-        return recipeRepository.findAll(pageable)
+    @GetMapping("/get10")
+    public Page<RecipeDTO> getRecipes(@RequestParam(defaultValue = "0") int page,
+                                   @RequestParam(defaultValue = "10") int size) {
+        return recipeRepository.findAll(PageRequest.of(page, size))
                 .map(recipe -> modelMapper.map(recipe,RecipeDTO.class));
     }
+
 
 }

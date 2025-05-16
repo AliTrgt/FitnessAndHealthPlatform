@@ -19,12 +19,13 @@ import { resolveAny } from 'dns';
 import { getRandomValues, sign } from 'crypto';
 import { forkJoin, Observable, of } from 'rxjs';
 import { ReversePipe } from '../pipe/reverse.pipe';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 
 @Component({
   selector: 'app-home-page',
   standalone: true,
-  imports: [CommonModule, RouterLink, DateAgoPipe, SidebarComponent],
+  imports: [CommonModule, RouterLink, DateAgoPipe, SidebarComponent, ScrollingModule],
   templateUrl: './home-page.component.html',
   styleUrl: './home-page.component.css'
 })
@@ -38,6 +39,9 @@ export class HomePageComponent implements OnInit {
   currentUser!: User;
   likedRecipes: Set<number> = new Set();
   userMap =  new Map<number,User>;
+
+  currentPage: number = 0;
+  pageSize: number = 10;
   constructor(private userService: UserService, private likeService: LikeService) { }
   
   ngOnInit() {
@@ -62,29 +66,44 @@ export class HomePageComponent implements OnInit {
     return this.authUserService.isLoggedIn();
   }
 
-  getAllRecipes() {
-    this.recipeService.getAllRecipes().subscribe(recipe => {
-      this.recipes.set(recipe);
+  getAllRecipes(page: number = 0, size: number = 10): void {
+    this.recipeService.getRecipes(page, size).subscribe(response => {
+      const recipeList = response.content;
+      this.recipes.set(recipeList);
+      this.recipeQuantity = response.totalElements;
   
-      // User bilgilerini almak için API çağrıları
-      const userObservables = recipe.map(r =>
-        this.userService.findById(r.userId)  // recipe.userId ile kullanıcıyı bul
-      );
+      // Tüm userId'leri benzersiz olarak al
+      const uniqueUserIds = [...new Set(recipeList.map(r => r.userId))];
   
-      forkJoin(userObservables).subscribe(users => {
-        // Kullanıcıları userMap'e ekle
+      // Toplu olarak kullanıcıları çek
+      this.userService.findAllByIds(uniqueUserIds).subscribe(users => {
         users.forEach(user => {
           this.userMap.set(user.id, user);
-          
         });
-        
-        // Artık her recipe'yi userMap ile eşleştirebilirsiniz
-        this.usernameList = recipe.map(r => this.userMap.get(r.userId)?.username || 'Unknown');
-        // Ayrıca fotoğraf url'leri de burada kullanabilirsiniz
       });
     });
-    
   }
+  
+
+  get reversedRecipes(): Recipe[] {
+    const recipes = this.recipes();
+    return recipes ? [...recipes].reverse() : [];
+  }
+
+  trackById(index: number, item: Recipe) {
+    return item.id;
+  }
+
+  loadNextPage() {
+    this.currentPage++;
+    this.getAllRecipes(this.currentPage, this.pageSize);
+  }
+
+  loadPreviousPage(){
+    this.currentPage--;
+    this.getAllRecipes(this.currentPage, this.pageSize);
+  }
+
   
   toggleLikeRecipe(recipeId: number) {
     if (!this.currentUser || !this.currentUser.id) {

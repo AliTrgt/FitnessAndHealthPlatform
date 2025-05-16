@@ -1,10 +1,11 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, signal, Signal } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { Recipe } from '../../model/recipe';
 import { response } from 'express';
 import { sign } from 'crypto';
-
+import { User } from '../../model/user';
+import { PageResponse } from '../../model/pageresponse';
 @Injectable({
   providedIn: 'root'
 })
@@ -16,8 +17,11 @@ export class RecipeService {
       return this.http.get<Recipe[]>(`${this.baseURL}`);
   }
 
-  getRecipes(page:number = 0){
-        return this.http.get<any>(`${this.baseURL}/recipes?page=${page}`)
+  getRecipes(page:number = 0,size:number = 10) : Observable<PageResponse<Recipe>>{
+        const params = new HttpParams()
+        .set('page',page)
+        .set('size',size)
+        return this.http.get<PageResponse<Recipe>>(`${this.baseURL}/get10`,{ params })
   }
 
   findById(recipeId:number) : Observable<Recipe>{

@@ -2,16 +2,17 @@ import { Component, OnInit } from '@angular/core';
 import { FollowService } from '../../service/follow/follow.service';
 import { User } from '../../model/user';
 import { UserService } from '../../service/user/user.service';
-import { response } from 'express';
+import { response, Router } from 'express';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Follow } from '../../model/follow';
 import { CommentService } from '../../service/comment/comment.service';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-followers-following',
   standalone: true,
-  imports: [CommonModule,FormsModule],
+  imports: [CommonModule,FormsModule,RouterLink],
   templateUrl: './followers-following.component.html',
   styleUrl: './followers-following.component.css'
 })
@@ -24,7 +25,6 @@ export class FollowersFollowingComponent implements OnInit {
   fusers:User[] = [];
   constructor(private followService:FollowService,private userService:UserService){
   }
-  
   
   ngOnInit() {
       const stringToken = localStorage.getItem('currentUser');

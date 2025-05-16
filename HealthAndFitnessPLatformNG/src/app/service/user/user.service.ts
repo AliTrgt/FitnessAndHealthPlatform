@@ -35,6 +35,10 @@ export class UserService {
   changeBMIValue(userId:number,newValue:number) : Observable<void>{
         return this.http.post<void>(`${this.baseURL}/change/${userId}`,{ newValue });
   }
+
+  findAllByIds(userIds: number[]): Observable<User[]> {
+    return this.http.post<User[]>(`${this.baseURL}/batch`, userIds);
+  }
   
 
 }

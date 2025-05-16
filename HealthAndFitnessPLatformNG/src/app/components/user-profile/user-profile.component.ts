@@ -11,11 +11,14 @@ import { Like } from '../../model/like';
 import { LikeService } from '../../service/like/like.service';
 import { FollowService } from '../../service/follow/follow.service';
 import { Follow } from '../../model/follow';
+import { ScrollingModule } from '@angular/cdk/scrolling';
+
+
 
 @Component({
   selector: 'app-user-profile',
   standalone: true,
-  imports: [CommonModule,FormsModule,RouterLink],
+  imports: [CommonModule,FormsModule,RouterLink,ScrollingModule],
   templateUrl: './user-profile.component.html',
   styleUrl: './user-profile.component.css'
 })
@@ -64,6 +67,8 @@ export class UserProfileComponent implements OnInit {
       this.savesLikesToLocalStorages();
     });
   }
+
+ 
   
   toggleFollowUser(){
     if(this.isFollowing){
