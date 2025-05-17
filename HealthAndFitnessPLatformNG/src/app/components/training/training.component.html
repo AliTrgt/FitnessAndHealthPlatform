@@ -1,0 +1,82 @@
+<div class="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50">
+      <app-sidebar></app-sidebar>
+  <main class="md:ml-72 pt-16 pb-20">
+    <!-- Başlık ve Antrenman Ekle Butonu -->
+    <div class="bg-white shadow-sm border-b border-emerald-100">
+      <div class="max-w-6xl mx-auto px-4 py-6 flex justify-between items-center">
+        <div>
+          <h1 class="text-2xl font-bold text-emerald-900">Antrenmanlarım</h1>
+          <p class="text-emerald-600/90 text-sm">Fitness hedeflerinize ulaşmanız için kişiselleştirilmiş programınız</p>
+        </div>
+        <button routerLink="/createTraining" 
+                class="bg-gradient-to-br from-emerald-600 to-green-500 hover:from-emerald-700 hover:to-green-600 text-white font-medium px-5 py-2.5 rounded-lg flex items-center transition-all duration-200 transform hover:scale-[1.02] shadow-md hover:shadow-emerald-200/50">
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+          </svg>
+          Antrenman Ekle
+        </button>
+      </div>
+    </div>
+
+    <!-- Antrenman Kartları -->
+    <div class="max-w-6xl mx-auto px-4 py-4">
+      <h2 class="text-xl font-bold text-emerald-900 mb-4">Haftanın Antrenmanları</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        @for (item of workoutPlan; track item.id) {
+        <div class="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 border border-emerald-100/80 overflow-hidden">
+          <div class="relative h-48">
+            <img [src]="getWorkoutImage(item.workoutType)" class="w-full h-full object-cover">
+            <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-emerald-800/60 to-transparent"></div>
+            <div class="absolute bottom-0 left-0 w-full p-4 text-white">
+              <span class="bg-emerald-600 text-xs font-bold px-2 py-1 rounded-full">Kardiyo</span>
+              <h3 class="text-lg font-bold mt-2">{{item.workoutType}}</h3>
+              <div class="flex items-center mt-1 text-xs opacity-90">
+                <svg class="w-4 h-4 mr-1 text-emerald-300" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+                </svg>
+                {{item.duration}} dakika süre
+              </div>
+            </div>
+          </div>
+          <div class="p-4">
+            <div class="flex justify-between mb-3">
+              <div class="flex items-center">
+                <span class="text-xs text-emerald-700 font-medium bg-emerald-100/80 px-2 py-1 rounded-full">
+                  {{item.createdAt | dateAgo }}
+                </span>
+              </div>
+              <div class="flex items-center space-x-1">
+                <span class="text-xs font-medium text-emerald-800">{{item.burningCalories.toFixed(1)}}</span>
+                <span class="text-xs text-emerald-600">kalori</span>
+              </div>
+            </div>
+                        
+            <div class="flex flex-wrap gap-2 my-3">
+              <span class="px-2 py-1 bg-emerald-100/80 text-emerald-800 rounded-full text-xs font-medium">
+                💪 Dayanıklılık
+              </span>
+              <span class="px-2 py-1 bg-emerald-100/80 text-emerald-800 rounded-full text-xs font-medium">
+                🔥 Yağ Yakımı
+              </span>
+              <span class="px-2 py-1 bg-emerald-100/80 text-emerald-800 rounded-full text-xs font-medium">
+                ❤️ Kalp Sağlığı
+              </span>
+            </div>
+            <div class="flex justify-between items-center mt-3">
+              <div class="bg-amber-50/80 border-l-4 border-amber-400 text-amber-800 p-3 rounded-md text-sm font-medium shadow-inner flex-1">
+                🏋️ {{item.workoutMessage}}
+              </div>
+              <button class="ml-3 flex items-center justify-center w-9 h-9 bg-red-100/80 hover:bg-red-200/90 text-red-800 rounded-lg transition-colors" 
+                      (click)="deleteTraining(item.id)">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m4-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+        }
+      </div>
+    </div>
+  </main>
+</div>

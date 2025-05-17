@@ -1,0 +1,188 @@
+<div class="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50">
+  <main *ngIf="recipe" class="max-w-6xl mx-auto px-6 pt-20 pb-24">
+    <!-- Header Section -->
+    <div class="flex items-center justify-between mb-8">
+      <a routerLink="/homepage" 
+         class="flex items-center px-4 py-2.5 bg-gradient-to-br from-emerald-600 to-green-500 hover:from-emerald-700 hover:to-green-600 text-white font-medium rounded-lg 
+                transition-all duration-200 transform hover:scale-[1.02] shadow-sm hover:shadow-emerald-200/50 
+                active:scale-95 border border-emerald-600/20">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+        </svg>
+        Ana Sayfaya Dön
+      </a>
+      
+      <div class="flex items-center gap-4">
+        <button (click)="toggleFavoriteButton()" class="group p-2 hover:bg-emerald-100/50 rounded-full transition-colors">
+          <svg *ngIf="!isFavorited" class="w-8 h-8 text-emerald-600 group-hover:text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" 
+                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+          </svg>
+          <svg *ngIf="isFavorited" class="w-8 h-8 text-red-500" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Recipe Content -->
+    <div class="bg-white rounded-2xl shadow-sm border border-emerald-100/80 p-8 mb-8">
+      <!-- Title and Image -->
+      <h1 class="text-4xl font-bold text-emerald-900 mb-6 text-center">{{recipe.title}}</h1>
+      
+      <div class="relative rounded-xl overflow-hidden shadow-lg mb-8">
+        <img [src]="'http://localhost:8080/' + recipe.imageUrl" 
+             class="w-full h-96 object-cover object-center">
+        <div class="absolute bottom-4 left-4 flex gap-3">
+          <span class="bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full text-emerald-700 font-medium shadow-sm flex items-center">
+            <svg class="w-5 h-5 mr-2 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            {{recipe.prepTime}} Dakika
+          </span>
+          <span class="bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full text-emerald-700 font-medium shadow-sm">
+            🔥 {{recipe.calories}} Kalori
+          </span>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <p class="text-lg text-emerald-700/90 mb-8 text-center max-w-2xl mx-auto leading-relaxed">
+        {{recipe.description}}
+      </p>
+
+      <!-- Content Grid -->
+      <div class="grid lg:grid-cols-3 gap-8">
+        <!-- Ingredients -->
+        <div class="lg:col-span-1">
+          <div class="bg-emerald-50/80 p-6 rounded-xl border border-emerald-100 sticky top-8">
+            <h2 class="text-2xl font-bold text-emerald-900 mb-6 flex items-center gap-2">
+              <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+              </svg>
+              Malzemeler
+            </h2>
+            <div class="space-y-3">
+              <div *ngFor="let ingredient of recipe.ingredientList" 
+                   class="flex justify-between items-center p-3 bg-white rounded-lg border border-emerald-100/80 hover:border-emerald-200 transition-colors">
+                <span class="text-emerald-700">{{ingredient.name}}</span>
+                <span class="text-emerald-900 font-medium bg-emerald-100/50 px-2 py-1 rounded">
+                  {{ingredient.quantity}}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Instructions & Comments -->
+        <div class="lg:col-span-2">
+          <!-- Instructions -->
+          <div class="bg-white p-6 rounded-xl border border-emerald-100/80 mb-8">
+            <h2 class="text-2xl font-bold text-emerald-900 mb-6 flex items-center gap-2">
+              <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+              </svg>
+              Hazırlanış
+            </h2>
+            <div class="space-y-6">
+              <div *ngFor="let instruction of recipe.instructions.split('\n'); let i = index" class="flex gap-4">
+                <div class="flex-shrink-0 w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center text-white font-bold">
+                  {{i + 1}}
+                </div>
+                <p class="text-emerald-700/90 leading-relaxed flex-1">
+                  {{instruction}}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Nutrition -->
+          <div class="bg-emerald-50/80 p-6 rounded-xl border border-emerald-100/80 mb-8">
+            <h3 class="text-xl font-bold text-emerald-900 mb-4">Besin Değerleri</h3>
+            <div class="grid grid-cols-2 gap-4">
+              <div class="col-span-1 p-4 bg-white rounded-lg border border-emerald-100/80">
+                <div class="text-center">
+                  <div class="text-3xl font-bold text-emerald-900 mb-2">{{recipe.calories}}</div>
+                  <div class="text-sm text-emerald-600 font-medium">Kalori (kcal)</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Comments -->
+          <div class="bg-white p-6 rounded-xl border border-emerald-100/80">
+            <div class="flex items-center justify-between mb-6">
+              <h3 class="text-xl font-bold text-emerald-900 flex items-center gap-2">
+                <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                </svg>
+                {{recipe.commentList.length}} Yorum
+              </h3>
+              <button (click)="popUp()"
+                      class="flex items-center bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-lg 
+                             transition-all duration-200 transform hover:scale-[1.02] shadow-sm">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+                Yorum Yap
+              </button>
+            </div>
+
+            <!-- Comment Form -->
+            <form [formGroup]="commentSectionForm" (ngSubmit)="createComment()" class="mb-8">
+              <div *ngIf="isOpen" class="space-y-4">
+                <textarea formControlName="content" rows="3"
+                  class="w-full px-4 py-3 text-emerald-700 bg-white rounded-lg border border-emerald-200 focus:ring-2 focus:ring-emerald-300 focus:border-emerald-300 outline-none transition"
+                  placeholder="Düşüncelerini paylaş..."></textarea>
+                <div class="flex justify-end gap-3">
+                  <button type="button" (click)="popUp()"
+                          class="px-4 py-2 text-emerald-700 bg-white border border-emerald-200 rounded-lg hover:bg-emerald-50 transition-colors">
+                    İptal
+                  </button>
+                  <button type="submit" [disabled]="commentSectionForm.invalid"
+                          class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors flex items-center">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    Gönder
+                  </button>
+                </div>
+              </div>
+            </form>
+
+            <!-- Comments List -->
+            <div class="space-y-6">
+              <div *ngFor="let comment of recipe.commentList | reverse ; let i = index" class="flex gap-4">
+                <img [routerLink]="['/userprofile',comment.userId]"
+                     [src]="'http://localhost:8080/' + userProfilePhotos.get(comment.userId)"
+                     class="w-12 h-12 rounded-full border-2 border-emerald-200 cursor-pointer hover:border-emerald-300 transition-colors">
+                
+                <div class="flex-1">
+                  <div class="bg-emerald-50/50 p-4 rounded-xl border border-emerald-100/80">
+                    <div class="flex items-center justify-between mb-2">
+                      <span [routerLink]="['/userprofile',comment.userId]" 
+                            class="font-medium text-emerald-900 hover:text-emerald-700 cursor-pointer">
+                        {{usernameList[i]}}
+                      </span>
+                      <span class="text-sm text-emerald-500">{{comment.createdAt | dateAgo}}</span>
+                    </div>
+                    <p class="text-emerald-700/90">{{comment.content}}</p>
+                    <div class="mt-3 flex justify-end" *ngIf="canDeleteComment(comment.userId)">
+                      <button (click)="deleteComment(comment.id)"
+                              class="text-red-500 hover:text-red-600 transition-colors flex items-center text-sm">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                        </svg>
+                        Sil
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

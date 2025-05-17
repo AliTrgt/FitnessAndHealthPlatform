@@ -1,0 +1,64 @@
+<nav class="bg-gradient-to-r from-green-700 to-green-600 fixed top-0 left-0 w-full z-50 shadow-xl">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="flex h-16 items-center justify-between">
+      <!-- Mobile Menu Button -->
+      <div class="sm:hidden">
+        <button type="button"
+          class="p-2 rounded-md text-white hover:bg-green-800/30 focus:outline-none focus:ring-2 focus:ring-white transition-colors">
+          <span class="sr-only">Menüyü Aç</span>
+          <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Logo & Desktop Menu -->
+      <div class="flex flex-1 items-center justify-center sm:justify-start">
+        <div class="flex items-center">
+          <span class="ml-2 text-white text-xl font-bold">ActiveLife</span>
+        </div>
+        <div class="hidden sm:ml-6 sm:block">
+          <div class="flex space-x-4">
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Section -->
+      <!-- Right Section -->
+      <div class="flex items-center space-x-3">
+        <a *ngIf="!isLoggedIn()" routerLink="/login"
+          class="px-4 py-2 text-sm font-semibold text-white bg-green-800/30 rounded-lg hover:bg-green-800/40 transition-colors no-underline">
+          Giriş Yap
+        </a>
+        <a *ngIf="!isLoggedIn()" routerLink="/register"
+          class="px-4 py-2 text-sm font-semibold text-white bg-green-800/30 rounded-lg hover:bg-green-800/40 transition-colors no-underline">
+          Kayıt Ol
+        </a>
+
+        <a *ngIf="isLoggedIn()" class="flex items-center space-x-2 no-underline" routerLink="/profile">
+          <div class="relative">
+            <img [src]="'http://localhost:8080/' + (currentUser()?.profilePhoto || user.profilePhoto)"
+              class="h-8 w-8 rounded-full border-2 border-green-200 object-cover" alt="Profil Fotoğrafı" />
+            <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-400 rounded-full border border-white"></span>
+          </div>
+          <span class="text-sm font-semibold text-white">Merhaba, {{ currentUser()?.username || user.username }} </span>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div class="sm:hidden" id="mobile-menu">
+    <div class="px-2 pt-2 pb-3 space-y-1">
+      <a
+        class="block px-3 py-2 text-base font-semibold text-white bg-green-800/30 rounded-lg hover:bg-green-800/40 transition-colors no-underline">Ana
+        Sayfa</a>
+      <a href="#"
+        class="block px-3 py-2 text-base font-semibold text-white hover:bg-green-800/30 rounded-lg transition-colors no-underline">Tarifler</a>
+      <a href="#"
+        class="block px-3 py-2 text-base font-semibold text-white hover:bg-green-800/30 rounded-lg transition-colors no-underline">Antrenman</a>
+    </div>
+  </div>
+</nav>
