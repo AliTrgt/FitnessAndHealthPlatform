@@ -8,6 +8,8 @@ import { CommonModule, DatePipe, formatDate } from '@angular/common';
 import { UserService } from '../../service/user/user.service';
 import { User } from '../../model/user';
 import { truncateSync } from 'fs';
+import { Location } from '@angular/common';
+
 import { get } from 'http';
 import { DateAgoPipe } from '../pipe/date-ago.pipe';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -43,7 +45,7 @@ export class RecipeComponent implements OnInit {
     recipeId: new FormControl(""),
     content: new FormControl("",[Validators.required])
   })
-  constructor(private route: ActivatedRoute, private recipeService: RecipeService, private userService: UserService, private commentService: CommentService,private favoriteService:FavoriteService) { }
+  constructor(private route: ActivatedRoute, private recipeService: RecipeService, private userService: UserService, private commentService: CommentService,private favoriteService:FavoriteService,private location:Location) { }
   ngOnInit() {
     const stringUser = localStorage.getItem('currentUser');
     stringUser ? this.user = JSON.parse(stringUser) : null;
@@ -59,6 +61,10 @@ export class RecipeComponent implements OnInit {
     console.log(this.user);
     this.getRecipeById();
     this.checkIfExistFavorite();
+  }
+
+  goBack(){
+      this.location.back();
   }
 
 
