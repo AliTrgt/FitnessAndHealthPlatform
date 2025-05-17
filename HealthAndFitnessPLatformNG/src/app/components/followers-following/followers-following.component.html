@@ -20,7 +20,7 @@
             'text-emerald-600 hover:text-emerald-700': activeTab !== 'followers'
           }"
         >
-          Takipçiler ({{followUsers.length}})
+          Takipçiler ({{followUsers.length || 0}})
         </button>
         <button 
           (click)="setTab('following')"
@@ -30,47 +30,78 @@
             'text-emerald-600 hover:text-emerald-700': activeTab !== 'following'
           }"
         >
-          Takip Edilenler ({{followingUsers.length}})
+          Takip Edilenler ({{followingUsers.length || 0}})
         </button>
       </div>
     </div>
 
+    <!-- Yükleniyor Durumu -->
+    <div *ngIf="isLoading" class="flex flex-col items-center justify-center py-12">
+      <div class="w-12 h-12 border-4 border-emerald-200 border-t-emerald-600 rounded-full animate-spin mb-4"></div>
+      <p class="text-emerald-700">Bağlantılar yükleniyor...</p>
+    </div>
+
     <!-- İçerik Alanı -->
-    <div class="space-y-3">
+    <div *ngIf="!isLoading" class="space-y-3">
+      <!-- Takipçiler Yükleniyor -->
+      <div *ngIf="activeTab === 'followers' && followersLoading" class="flex flex-col items-center justify-center py-8">
+        <div class="w-10 h-10 border-3 border-emerald-200 border-t-emerald-600 rounded-full animate-spin mb-3"></div>
+        <p class="text-emerald-700 text-sm">Takipçiler yükleniyor...</p>
+      </div>
+      
+      <!-- Takip Edilenler Yükleniyor -->
+      <div *ngIf="activeTab === 'following' && followingLoading" class="flex flex-col items-center justify-center py-8">
+        <div class="w-10 h-10 border-3 border-emerald-200 border-t-emerald-600 rounded-full animate-spin mb-3"></div>
+        <p class="text-emerald-700 text-sm">Takip edilenler yükleniyor...</p>
+      </div>
+
       <!-- Takipçi Listesi -->
-      <div *ngIf="users.length > 0 && activeTab == 'followers'" 
+      <div *ngIf="users.length > 0 && activeTab === 'followers' && !followersLoading" 
            class="bg-white/95 backdrop-blur-sm p-4 rounded-xl shadow-sm border border-emerald-100/80 hover:shadow-emerald-200/50 transition-all">
         <div *ngFor="let user of users" class="flex items-center justify-between mb-4 last:mb-0">
           <div class="flex items-center gap-4">
             <div class="w-12 h-12 rounded-full bg-emerald-200/80 overflow-hidden ring-2 ring-emerald-100">
-              <img [src]="'http://localhost:8080/' + user.profilePhoto" class="w-full h-full object-cover">
+              <img [src]="'http://localhost:8080/' + user.profilePhoto" 
+                   onerror="this.src='assets/default-profile.png'" 
+                   class="w-full h-full object-cover">
             </div>
             <div>
               <h3 class="font-semibold text-emerald-900">{{user.username}}</h3>
-              <p class="text-sm text-emerald-600/90">{{user.followers.length}} Takipçi</p>
+              <p class="text-sm text-emerald-600/90">{{user.followers!.length || 0}} Takipçi</p>
             </div>
           </div>
+          <a [routerLink]="['/profile', user.id]" 
+             class="px-3 py-1 text-sm rounded-full border border-emerald-200 text-emerald-700 hover:bg-emerald-50 transition-colors">
+            Profili Gör
+          </a>
         </div>
       </div>
 
       <!-- Takip Edilenler Listesi -->
-      <div *ngIf="activeTab == 'following' && fusers.length > 0" 
+      <div *ngIf="activeTab === 'following' && fusers.length > 0 && !followingLoading" 
            class="bg-white/95 backdrop-blur-sm p-4 rounded-xl shadow-sm border border-emerald-100/80 hover:shadow-emerald-200/50 transition-all">
         <div *ngFor="let user of fusers" class="flex items-center justify-between mb-4 last:mb-0">
           <div class="flex items-center gap-4">
             <div class="w-12 h-12 rounded-full bg-emerald-200/80 overflow-hidden ring-2 ring-emerald-100">
-              <img [src]="'http://localhost:8080/' + user.profilePhoto" class="w-full h-full object-cover">
+              <img [src]="'http://localhost:8080/' + user.profilePhoto" 
+                   onerror="this.src='assets/default-profile.png'" 
+                   class="w-full h-full object-cover">
             </div>
             <div>
               <h3 class="font-semibold text-emerald-900">{{user.username}}</h3>
-              <p class="text-sm text-emerald-600/90">{{user.followers.length}} Takipçi</p>
+              <p class="text-sm text-emerald-600/90">{{user.followers!.length || 0}} Takipçi</p>
             </div>
           </div>
+          <a [routerLink]="['/profile', user.id]" 
+             class="px-3 py-1 text-sm rounded-full border border-emerald-200 text-emerald-700 hover:bg-emerald-50 transition-colors">
+            Profili Gör
+          </a>
         </div>
       </div>
 
       <!-- Boş Liste Durumu -->
-      <div *ngIf="(activeTab === 'followers' && users.length === 0) || (activeTab === 'following' && fusers.length === 0)" 
+      <div *ngIf="(activeTab === 'followers' && users.length === 0 && !followersLoading) || 
+                  (activeTab === 'following' && fusers.length === 0 && !followingLoading)" 
            class="bg-white/95 backdrop-blur-sm p-8 rounded-xl text-center border-2 border-dashed border-emerald-200/80">
         <div class="max-w-xs mx-auto">
           <svg class="w-16 h-16 mx-auto text-emerald-400/80 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -79,6 +110,14 @@
           <h4 class="text-lg font-medium text-emerald-900 mb-2">Henüz bağlantın yok</h4>
           <p class="text-emerald-600/90">Yeni insanlar keşfet ve onları takip etmeye başla!</p>
         </div>
+      </div>
+      
+      <!-- Hata Durumu -->
+      <div *ngIf="hasError" class="bg-red-50 p-4 rounded-lg border border-red-100 text-red-700 text-center">
+        <svg class="w-8 h-8 mx-auto text-red-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+        </svg>
+        <p>Bağlantılar yüklenirken bir hata oluştu. Lütfen daha sonra tekrar deneyin.</p>
       </div>
     </div>
   </div>
