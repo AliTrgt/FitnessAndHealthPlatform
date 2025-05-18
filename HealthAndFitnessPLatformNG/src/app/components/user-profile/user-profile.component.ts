@@ -12,13 +12,15 @@ import { LikeService } from '../../service/like/like.service';
 import { FollowService } from '../../service/follow/follow.service';
 import { Follow } from '../../model/follow';
 import { ScrollingModule } from '@angular/cdk/scrolling';
+import { signal } from '@angular/core';
+import { RecipeSearchPipe } from '../pipe/recipe-search.pipe';
 
 
 
 @Component({
   selector: 'app-user-profile',
   standalone: true,
-  imports: [CommonModule,FormsModule,RouterLink,ScrollingModule],
+  imports: [CommonModule,FormsModule,RouterLink,ScrollingModule,RecipeSearchPipe],
   templateUrl: './user-profile.component.html',
   styleUrl: './user-profile.component.css'
 })
@@ -27,6 +29,7 @@ export class UserProfileComponent implements OnInit {
   sessionUser!:User;
   userId!:number;
   recipes:Recipe[] = [];
+    searchText = signal('');
   isFollowing:boolean = false;
   likedRecipes: Set<number> = new Set();
   constructor(private router:ActivatedRoute,private userService:UserService,private recipeService:RecipeService,private likeService:LikeService,private followService:FollowService){}
@@ -68,7 +71,9 @@ export class UserProfileComponent implements OnInit {
     });
   }
 
-
+  trackByRecipeId(index: number, recipe: any): number {
+    return recipe.id; // veya unique identifier
+  }
   
   
   toggleFollowUser(){

@@ -8,17 +8,20 @@ import { RecipeService } from '../../service/recipe/recipe.service';
 import { RouterLink, RouterLinkWithHref } from '@angular/router';
 import { response } from 'express';
 import { ScrollingModule } from '@angular/cdk/scrolling';
+import { RecipeSearchPipe } from '../pipe/recipe-search.pipe';
+import { FormsModule } from '@angular/forms';
 
 
 @Component({
   selector: 'app-my-recipes',
   standalone: true,
-  imports: [CommonModule, SidebarComponent,RouterLink,ScrollingModule],
+  imports: [CommonModule, SidebarComponent,RouterLink,ScrollingModule,RecipeSearchPipe,FormsModule],
   templateUrl: './my-recipes.component.html',
   styleUrl: './my-recipes.component.css'
 })
 export class MyRecipesComponent {
   private authUserService = inject(AuthUserService)  
+  searchText = signal('');
   user!:User;
   recipeList = signal<Recipe[] | null>(null);
     constructor(private recipeService:RecipeService){
