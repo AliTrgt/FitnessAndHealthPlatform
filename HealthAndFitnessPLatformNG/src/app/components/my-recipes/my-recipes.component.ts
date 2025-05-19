@@ -12,6 +12,7 @@ import { RecipeSearchPipe } from '../pipe/recipe-search.pipe';
 import { FormsModule } from '@angular/forms';
 
 
+
 @Component({
   selector: 'app-my-recipes',
   standalone: true,
@@ -43,7 +44,7 @@ export class MyRecipesComponent {
         })
     }
     trackByRecipeId(index: number, recipe: any): number {
-      return recipe.id; // veya unique identifier
+      return recipe.id; 
     }
 
     removeRecipe(id:number){

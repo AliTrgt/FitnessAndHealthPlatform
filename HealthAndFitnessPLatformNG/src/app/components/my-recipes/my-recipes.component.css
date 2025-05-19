@@ -1,0 +1,8 @@
+/* component.scss veya global styles */
+.cdk-virtual-scroll-content-wrapper {
+     will-change: transform; /* GPU hızlandırma */
+   }
+   
+   .recipe-card {
+     contain: strict; /* Tarayıcıya layout sınırlarını söyle */
+   }

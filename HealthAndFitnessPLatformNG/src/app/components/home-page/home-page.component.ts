@@ -38,19 +38,19 @@ export class HomePageComponent implements OnInit {
   usernameList: string[] = [];
   currentUser!: User;
   likedRecipes: Set<number> = new Set();
-  userMap =  new Map<number,User>;
+  userMap = new Map<number, User>;
 
   currentPage: number = 0;
   pageSize: number = 10;
   constructor(private userService: UserService, private likeService: LikeService) { }
-  
+
   ngOnInit() {
     const userToken = localStorage.getItem('currentUser');
     if (userToken) {
       this.currentUser = JSON.parse(userToken);
       this.loadUserLikesFromDB(this.currentUser.id);
     }
-    this.loadLikesFromLocalStorage(); 
+    this.loadLikesFromLocalStorage();
     this.getAllRecipes();
   }
 
@@ -71,19 +71,22 @@ export class HomePageComponent implements OnInit {
       const recipeList = response.content;
       this.recipes.set(recipeList);
       this.recipeQuantity = response.totalElements;
-  
+
       // Tüm userId'leri benzersiz olarak al
-      const uniqueUserIds = [...new Set(recipeList.map(r => r.userId))];
-  
-      // Toplu olarak kullanıcıları çek
-      this.userService.findAllByIds(uniqueUserIds).subscribe(users => {
-        users.forEach(user => {
-          this.userMap.set(user.id, user);
+      const uniqueUserIds = [...new Set(recipeList.map(r => r.userId).filter(id => id != null))];
+      const chunkSize = 50;
+      for (let i = 0; i < uniqueUserIds.length; i += chunkSize) {
+        const chunk = uniqueUserIds.slice(i, i + chunkSize).map(id => Number(id));
+        this.userService.findAllByIds(chunk).subscribe(users => {
+          users.forEach(user => {
+            this.userMap.set(user.id, user);
+          });
         });
-      });
+      }
+
     });
   }
-  
+
 
   get reversedRecipes(): Recipe[] {
     const recipes = this.recipes();
@@ -99,25 +102,25 @@ export class HomePageComponent implements OnInit {
     this.getAllRecipes(this.currentPage, this.pageSize);
   }
 
-  loadPreviousPage(){
+  loadPreviousPage() {
     this.currentPage--;
     this.getAllRecipes(this.currentPage, this.pageSize);
   }
 
-  
+
   toggleLikeRecipe(recipeId: number) {
     if (!this.currentUser || !this.currentUser.id) {
       console.warn('Kullanıcı bilgisi henüz yüklenmedi. Like atılamaz.');
       return;
     }
-  
+
     const like: Like = { userId: this.currentUser.id, recipeId: recipeId };
-    
+
     this.likeService.toggleLike(like).subscribe({
       next: response => {
         const recipe = this.recipes()!.find(r => r.id === recipeId);
         if (!recipe) return;
-  
+
         const existingLikeIndex = recipe.likeList.findIndex(l => l.userId === this.currentUser.id);
         if (existingLikeIndex !== -1) {
           recipe.likeList.splice(existingLikeIndex, 1);
@@ -128,7 +131,7 @@ export class HomePageComponent implements OnInit {
           recipe.likeCount++;
           this.likedRecipes.add(recipeId);
         }
-  
+
         this.saveLikesToLocalStorage();
       },
       error: err => {
@@ -136,11 +139,11 @@ export class HomePageComponent implements OnInit {
       }
     });
   }
-  
 
-   likedRecipeHas(recipeId:number) : boolean {
-     return this.likedRecipes.has(recipeId);  
-    }
+
+  likedRecipeHas(recipeId: number): boolean {
+    return this.likedRecipes.has(recipeId);
+  }
 
   saveLikesToLocalStorage() {
     localStorage.setItem('likedRecipes', JSON.stringify([...this.likedRecipes]));
