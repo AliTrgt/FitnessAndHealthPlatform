@@ -1,6 +1,7 @@
 package com.example.HealthAndFitnessPlatform.service;
 
 import com.example.HealthAndFitnessPlatform.dto.IngredientDTO;
+import com.example.HealthAndFitnessPlatform.dto.RecipeDTO;
 import com.example.HealthAndFitnessPlatform.exception.IngredientNotFoundException;
 import com.example.HealthAndFitnessPlatform.model.Ingredient;
 import com.example.HealthAndFitnessPlatform.model.Recipe;
@@ -11,6 +12,7 @@ import org.antlr.v4.runtime.atn.LexerATNSimulator;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -77,6 +79,5 @@ public class IngredientService {
         // 3) Şimdi ingredient'ı sil
         ingredientRepository.delete(ing);
     }
-
 
 }
