@@ -12,15 +12,55 @@
       <p class="mt-4 text-lg text-green-700/90">Sağlıklı yaşam alışkanlıklarınıza göre özel seçilmiş tarifler</p>
     </div>
 
-    <!-- Recipe Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 px-4">
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="flex flex-col items-center justify-center py-16">
+      <!-- Loading Animation -->
+      <div class="relative w-20 h-20">
+        <!-- Outer circle -->
+        <div class="absolute top-0 left-0 w-full h-full border-4 border-green-100 rounded-full"></div>
+        <!-- Animated circle -->
+        <div class="absolute top-0 left-0 w-full h-full border-4 border-t-green-600 border-r-green-500 border-b-green-400 border-l-transparent rounded-full animate-spin"></div>
+        <!-- Center icon -->
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+          <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+          </svg>
+        </div>
+      </div>
+      <p class="mt-6 text-green-700 font-medium">Tarifleriniz hazırlanıyor...</p>
+      <p class="mt-2 text-green-600/70 text-sm">Size özel lezzetli ve sağlıklı öneriler seçiliyor</p>
+    </div>
+
+    <!-- No Recipe State -->
+    <div *ngIf="!isLoading && recipeList.length === 0 && !errorMessage" class="flex flex-col items-center justify-center py-16">
+      <div class="w-24 h-24 bg-green-50 rounded-full flex items-center justify-center mb-6">
+        <svg class="w-12 h-12 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+        </svg>
+      </div>
+      <h3 class="text-xl font-bold text-gray-800 mb-2">Henüz öneri bulunmuyor</h3>
+      <p class="text-gray-600 text-center max-w-md mb-6">Sizin için öneriler almak için aşağıdaki butona tıklayabilirsiniz</p>
+      <button (click)="getReccomendation()" 
+              class="flex items-center bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg transition-all">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+        </svg>
+        Önerileri Getir
+      </button>
+    </div>
+
+    <!-- Recipe Grid (only shown when there are recipes and not loading) -->
+    <div *ngIf="!isLoading && recipeList.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 px-4">
       <!-- Recipe Card -->
       <div *ngFor="let recipe of recipeList | slice:0:6" 
            class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col group overflow-hidden hover:-translate-y-1">
-        <!-- Image Section -->
-        <div class="h-52 bg-gradient-to-br from-green-100 to-green-50 animate-pulse relative">
+        <!-- Image Section with Skeleton Loading -->
+        <div class="h-52 relative overflow-hidden">
+          <!-- Skeleton Loading Animation -->
+          <div class="absolute inset-0 bg-gradient-to-r from-green-50 to-green-100 animate-pulse"></div>
+          <!-- Actual Image -->
           <img [src]="'http://localhost:8080/' + recipe.imageUrl" 
-               class="object-cover w-full h-full transition-opacity duration-300"
+               class="object-cover w-full h-full transition-all duration-500 z-10 relative"
                loading="lazy">
           <div class="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-black/30 to-transparent"></div>
         </div>
@@ -63,16 +103,21 @@
       </div>
     </div>
 
-    <!-- Action Buttons Section -->
-    <div class="flex flex-col items-center mt-16">
+    <!-- Action Buttons Section (only shown when there are recipes or error) -->
+    <div *ngIf="recipeList.length > 0 || errorMessage" class="flex flex-col items-center mt-16">
       <div class="flex flex-col sm:flex-row gap-4">
         <!-- New Recommendations Button -->
         <button (click)="getReccomendation()"
-                class="flex items-center bg-green-600 hover:bg-green-700 text-white font-semibold py-3.5 px-8 rounded-xl shadow-lg transition-all transform hover:scale-[1.02]">
-          <svg class="w-6 h-6 mr-2 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                [disabled]="isLoading"
+                class="flex items-center bg-green-600 hover:bg-green-700 text-white font-semibold py-3.5 px-8 rounded-xl shadow-lg transition-all transform hover:scale-[1.02] disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:bg-green-600">
+          <svg *ngIf="!isLoading" class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
           </svg>
-          Yeni Önerileri Getir
+          <svg *ngIf="isLoading" class="w-5 h-5 mr-2 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          {{ isLoading ? 'Yükleniyor...' : 'Yeni Önerileri Getir' }}
         </button>
 
         <!-- Homepage Button -->
@@ -89,6 +134,7 @@
       <div *ngIf="errorMessage" 
            class="mt-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl shadow-sm max-w-md text-center">
         <p class="font-medium">{{ errorMessage }}</p>
+        <p class="text-sm mt-1 text-red-600/80">İlginizi çeken tarifleri beğenerek size özel öneriler alabilirsiniz.</p>
       </div>
     </div>
 
