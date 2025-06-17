@@ -48,8 +48,12 @@ Bu platform;
 ## 📸 Ekran Görüntüleri (Opsiyonel)
 > Eğer görsellerin varsa buraya ekle:
 \`\`\`bash
-src/assets/screens/homepage.png
-src/assets/screens/profile-page.png
+![Ana Sayfa](images/HomePage.png)
+![Profil Sayfası](images/ProfilePage.png)
+![Öneri Sistemi](images/Reccomendation.png)
+![Tarif Sistemi](images/recipePage.png)
+![Antrenman Sistemi](images/Training.png)
+
 src/assets/screens/suggestion-system.png
 \`\`\`
 
