@@ -57,62 +57,36 @@ src/assets/screens/suggestion-system.png
 
 ### Backend (Spring Boot)
 
-\`\`\`bash
-cd server
+>cd server
 ./mvnw clean install
 java -jar target/fitness-platform.jar
-\`\`\`
+
 
 ### Frontend (Angular)
 
-\`\`\`bash
-cd client
+>cd client
 npm install
 ng serve --open
-\`\`\`
+
 
 ### Öneri Servisi (Python Flask)
 
-\`\`\`bash
-cd recommendation-service
+>cd recommendation-service
 pip install -r requirements.txt
 python app.py
-\`\`\`
+
 
 ## 🧪 API Dökümantasyonu
 
 Swagger UI ile tüm API'ler test edilebilir:
 
-\`\`\`
 http://localhost:8080/swagger-ui/index.html
-\`\`\`
-
-## 🗃️ Veritabanı Tasarımı (Özet)
-
-- \`User\`: id, name, email, height, weight, profile_photo
-- \`Recipe\`: id, title, description, ingredients, category, user_id
-- \`Activity\`: id, duration, type, calories_burned, user_id
-- \`Favorite\`: user_id, recipe_id
-- \`Comment\`, \`Like\`, \`Follow\` tabloları
 
 ## 🔐 Güvenlik
 
 - Spring Security + JWT
 - Role-based erişim kontrolü (USER / ADMIN)
 - Giriş / kayıt endpoint’leri public, diğerleri auth gerektiriyor
-
-## 📦 Docker Desteği
-
-\`\`\`bash
-docker-compose up --build
-\`\`\`
-
-> Frontend, backend ve öneri sistemi için örnek \`docker-compose.yml\` dosyası mevcuttur.
-
-## ✍️ Katkı Sağlayanlar
-
-- 👨‍💻 Ali Turgut - Geliştirici & Araştırmacı
-- 🤖 BERT + Flask Öneri Sistemi (ML Modülü)
 
 ## 📄 Lisans
 
