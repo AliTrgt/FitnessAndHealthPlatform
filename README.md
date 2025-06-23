@@ -46,8 +46,6 @@ Bu platform;
 | 🗂️ Admin Paneli | Rol bazlı yetkilendirme ve içerik kontrolü |
 
 ## 📸 Ekran Görüntüleri (Opsiyonel)
-> Eğer görsellerin varsa buraya ekle:
-\`\`\`bash
 ![Ana Sayfa](images/HomePage.png)
 ![Profil Sayfası](images/ProfilePage.png)
 ![Öneri Sistemi](images/Reccomendation.png)
