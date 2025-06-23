@@ -52,9 +52,6 @@ Bu platform;
 ![Tarif Sistemi](images/recipePage.png)
 ![Antrenman Sistemi](images/Training.png)
 
-src/assets/screens/suggestion-system.png
-\`\`\`
-
 ## ⚙️ Kurulum
 
 ### Backend (Spring Boot)
@@ -89,7 +86,3 @@ http://localhost:8080/swagger-ui/index.html
 - Spring Security + JWT
 - Role-based erişim kontrolü (USER / ADMIN)
 - Giriş / kayıt endpoint’leri public, diğerleri auth gerektiriyor
-
-## 📄 Lisans
-
-MIT Lisansı © 2025 Ali Turgut
